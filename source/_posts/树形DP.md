@@ -1,7 +1,8 @@
 ---
 title: 树形DP
-category: Competitive Programming
-tag: DP
+categories: Competitive Programming
+tags: DP
+excerpt: 在树上跑DP。
 ---
 
 # 什么是树形DP
