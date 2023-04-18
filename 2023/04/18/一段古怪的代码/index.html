@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"a48zhang.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.15.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="------------------------------------警告：请在打开本文前阅读。------------------------------------当暴露在大量C++指针下时，有极小部分人群会引发癫痫。这种情形可能是由于某些未查出的癫痫症状引起，即使该人员并没有患癫痫病史也有可能造成此类病症。如果您的家人或任何家庭成员曾有过类似症状，请在阅读本文前咨询您的医生或医师。如果您在">
+<meta property="og:type" content="article">
+<meta property="og:title" content="一段古怪的代码">
+<meta property="og:url" content="https://a48zhang.github.io/2023/04/18/%E4%B8%80%E6%AE%B5%E5%8F%A4%E6%80%AA%E7%9A%84%E4%BB%A3%E7%A0%81/index.html">
+<meta property="og:site_name" content="a48zhang&#39;s blog">
+<meta property="og:description" content="------------------------------------警告：请在打开本文前阅读。------------------------------------当暴露在大量C++指针下时，有极小部分人群会引发癫痫。这种情形可能是由于某些未查出的癫痫症状引起，即使该人员并没有患癫痫病史也有可能造成此类病症。如果您的家人或任何家庭成员曾有过类似症状，请在阅读本文前咨询您的医生或医师。如果您在">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-04-18T22:17:36.000Z">
+<meta property="article:modified_time" content="2023-04-18T15:24:26.170Z">
+<meta property="article:author" content="a48zhang">
+<meta property="article:tag" content="CPP">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://a48zhang.github.io/2023/04/18/%E4%B8%80%E6%AE%B5%E5%8F%A4%E6%80%AA%E7%9A%84%E4%BB%A3%E7%A0%81/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://a48zhang.github.io/2023/04/18/%E4%B8%80%E6%AE%B5%E5%8F%A4%E6%80%AA%E7%9A%84%E4%BB%A3%E7%A0%81/","path":"2023/04/18/一段古怪的代码/","title":"一段古怪的代码"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>一段古怪的代码 | a48zhang's blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">a48zhang's blog</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#What%E2%80%99s-happening"><span class="nav-number">1.</span> <span class="nav-text">What’s happening?</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Lambda%E8%A1%A8%E8%BE%BE%E5%BC%8F%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F"><span class="nav-number">1.1.</span> <span class="nav-text">Lambda表达式是什么？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%87%BD%E6%95%B0%E6%8C%87%E9%92%88%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F"><span class="nav-number">1.2.</span> <span class="nav-text">函数指针是什么？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%82%A3%E4%B9%88%E5%89%8D%E9%9D%A2%E5%91%A2%EF%BC%9F"><span class="nav-number">1.3.</span> <span class="nav-text">那么前面呢？</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%BB%93%E8%AE%BA"><span class="nav-number">2.</span> <span class="nav-text">结论</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">a48zhang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">5</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://a48zhang.github.io/2023/04/18/%E4%B8%80%E6%AE%B5%E5%8F%A4%E6%80%AA%E7%9A%84%E4%BB%A3%E7%A0%81/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="a48zhang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="a48zhang's blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="一段古怪的代码 | a48zhang's blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          一段古怪的代码
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2023-04-18 22:17:36 / 修改时间：15:24:26" itemprop="dateCreated datePublished" datetime="2023-04-18T22:17:36+00:00">2023-04-18</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Programming-Skills/" itemprop="url" rel="index"><span itemprop="name">Programming Skills</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>很久很久以前，我在互联网上的某个角落看到了这样一段代码。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="type">int</span> *(*(*pfunc)(<span class="type">void</span> *(*)(<span class="type">int</span> *, <span class="type">float</span>), <span class="type">int</span>))(<span class="type">int</span>, <span class="type">double</span> *) = </span><br><span class="line">        [](<span class="type">void</span> *(*)(<span class="type">int</span> *, <span class="type">float</span>), <span class="type">int</span>) -&gt; <span class="type">int</span> *(*)(<span class="type">int</span>, <span class="type">double</span> *) </span><br><span class="line">    &#123; <span class="keyword">return</span> [](<span class="type">int</span>, <span class="type">double</span> *) -&gt; <span class="type">int</span> * &#123; <span class="keyword">return</span> <span class="literal">nullptr</span>; &#125;; &#125;;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>该段代码可以在笔者的<code>Clang++ 16</code>上通过编译并正确运行。</p>
+<p>（我看不懂，但我大受震撼.jpg）</p>
+<p>为了复习我学过的指针、lambda函数知识，我决定试着解释这段代码。</p>
+<hr>
+<h1 id="What’s-happening"><a href="#What’s-happening" class="headerlink" title="What’s happening?"></a>What’s happening?</h1><p>前面的部分实在太复杂啦，也许我们可以从等号后面读起。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 省略...</span></span><br><span class="line">= [](<span class="type">void</span> *(*)(<span class="type">int</span> *, <span class="type">float</span>), <span class="type">int</span>) </span><br><span class="line">    -&gt; <span class="type">int</span> *(*)(<span class="type">int</span>, <span class="type">double</span> *) &#123; </span><br><span class="line">    <span class="keyword">return</span> [](<span class="type">int</span>, <span class="type">double</span> *) -&gt; <span class="type">int</span> * </span><br><span class="line">    &#123; <span class="keyword">return</span> <span class="literal">nullptr</span>; &#125;; &#125;;</span><br></pre></td></tr></table></figure>
+
+<p>这显然是一个lambda表达式，他的返回类型是 <code>int *(*)(int, double *)</code> —— 一个参数类型为<code>int, double *</code>，返回<code>int*</code>的函数指针。</p>
+<h2 id="Lambda表达式是什么？"><a href="#Lambda表达式是什么？" class="headerlink" title="Lambda表达式是什么？"></a>Lambda表达式是什么？</h2><p>一种用来定义匿名函数的语法。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[<span class="comment">/*捕获外部的变量*/</span>]</span><br><span class="line">(<span class="comment">/*函数的参数*/</span>)</span><br><span class="line">-&gt;<span class="comment">/*返回值类型。不填的话，编译器会帮你自动推导*/</span></span><br><span class="line">&#123;<span class="comment">/*函数体部分*/</span>&#125;;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="函数指针是什么？"><a href="#函数指针是什么？" class="headerlink" title="函数指针是什么？"></a>函数指针是什么？</h2><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 声明函数指针pFunc, 该函数接受两个int类型参数。</span></span><br><span class="line"><span class="built_in">int</span> (*pFunc)(<span class="type">int</span>, <span class="type">int</span>);</span><br><span class="line"><span class="comment">// 你可以像平常声明函数那样给参数起个名字。但没必要。</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 假设我们之前定义过了add函数（并且它刚好也接受两个int型参数）。</span></span><br><span class="line"><span class="type">int</span> pFunc = add;</span><br><span class="line"><span class="comment">// 函数名本身就是指向函数的指针</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//调用！</span></span><br><span class="line">(*pFunc)(<span class="number">2</span>, <span class="number">3</span>);</span><br><span class="line"><span class="comment">// 加括号以避免符号运算顺序来捣乱</span></span><br></pre></td></tr></table></figure>
+
+<p>再看看这个表达式吧。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 省略...</span></span><br><span class="line">= [](<span class="type">void</span> *(*)(<span class="type">int</span> *, <span class="type">float</span>), <span class="type">int</span>) </span><br><span class="line"><span class="comment">// 参数</span></span><br><span class="line"><span class="comment">// 第一个参数是一个函数指针，接受参数(int *, float)，返回void *</span></span><br><span class="line"><span class="comment">// 第二个参数是一个int型变量</span></span><br><span class="line">-&gt; <span class="type">int</span> *(*)(<span class="type">int</span>, <span class="type">double</span> *) </span><br><span class="line"><span class="comment">// 返回值类型</span></span><br><span class="line"><span class="comment">// 一个函数指针，接受参数(int, double *)，返回int *</span></span><br><span class="line">&#123; <span class="keyword">return</span> [](<span class="type">int</span>, <span class="type">double</span> *) -&gt; <span class="type">int</span> * &#123; <span class="keyword">return</span> <span class="literal">nullptr</span>; &#125;; &#125;;</span><br><span class="line"><span class="comment">// 函数体</span></span><br><span class="line"><span class="comment">// omg 怎么是lambda套娃</span></span><br><span class="line"><span class="comment">// 接受(int, double *)，返回 (int*)nullptr</span></span><br><span class="line"><span class="comment">// Tips: nullptr 的类型是 std::nullptr_t</span></span><br><span class="line"><span class="comment">// 它是一个特殊的类型，可以隐式地转换为任何指针类型，但不能转换为其他类型。</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="那么前面呢？"><a href="#那么前面呢？" class="headerlink" title="那么前面呢？"></a>那么前面呢？</h2><p>既然后面是一个lambda表达式，前面大概就是在声明函数指针吧。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> *( </span><br><span class="line">    </span><br><span class="line">    *(*pfunc) ( <span class="type">void</span> *(*)(<span class="type">int</span> *, <span class="type">float</span>), <span class="type">int</span>)  </span><br><span class="line">    <span class="comment">//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span></span><br><span class="line">    )</span><br><span class="line">    (<span class="type">int</span>, <span class="type">double</span> *)</span><br><span class="line">    </span><br><span class="line">    </span><br></pre></td></tr></table></figure>
+
+<p>是函数指针套娃，真难顶。</p>
+<ul>
+<li>外层：一个函数指针，接受 <code>(int, double *)</code>，返回 <code>int*</code>。</li>
+<li>内层：一个指向函数指针<code>*pfunc</code>的指针。</li>
+</ul>
+<hr>
+<h1 id="结论"><a href="#结论" class="headerlink" title="结论"></a>结论</h1><p>这段代码声明了<code>pfunc</code>，它指向一个接受<code>(void *(*)(int *, float), int)</code>  的函数，即后面那一大个lambda表达式。</p>
+<p><code>pfunc</code>返回一个<code>int *(*)(int, double *)</code>型函数指针，即套在里面的小lambda。很显然，他的返回值是被转换成<code>int*</code>类型的<code>nullptr</code>。</p>
+<p>人类怎么能写出这样的代码呢？</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/CPP/" rel="tag"># CPP</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2023/04/18/%E5%B9%B6%E6%9F%A5%E9%9B%86/" rel="prev" title="并查集">
+                  <i class="fa fa-chevron-left"></i> 并查集
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">a48zhang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>
