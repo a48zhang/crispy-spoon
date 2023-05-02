@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"a48zhang.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.15.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="能实现快速的区间查询、区间修改的数据结构。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="线段树">
+<meta property="og:url" content="https://a48zhang.github.io/2023/05/02/%E7%BA%BF%E6%AE%B5%E6%A0%91/index.html">
+<meta property="og:site_name" content="a48zhang&#39;s blog">
+<meta property="og:description" content="能实现快速的区间查询、区间修改的数据结构。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-05-02T18:59:01.000Z">
+<meta property="article:modified_time" content="2023-05-02T16:15:23.571Z">
+<meta property="article:author" content="a48zhang">
+<meta property="article:tag" content="Competitive Programming">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://a48zhang.github.io/2023/05/02/%E7%BA%BF%E6%AE%B5%E6%A0%91/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://a48zhang.github.io/2023/05/02/%E7%BA%BF%E6%AE%B5%E6%A0%91/","path":"2023/05/02/线段树/","title":"线段树"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>线段树 | a48zhang's blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">a48zhang's blog</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BA%BF%E6%AE%B5%E6%A0%91"><span class="nav-number">1.</span> <span class="nav-text">线段树</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BE%8B%E9%A2%98"><span class="nav-number"></span> <span class="nav-text">例题</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#CF213769A"><span class="nav-number">1.</span> <span class="nav-text">CF213769A</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BB%BA%E6%A0%91"><span class="nav-number">1.1.</span> <span class="nav-text">建树</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9F%A5%E8%AF%A2"><span class="nav-number">1.2.</span> <span class="nav-text">查询</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%99%AE%E9%80%9A%E7%9A%84%E4%BF%AE%E6%94%B9"><span class="nav-number">1.3.</span> <span class="nav-text">普通的修改</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%87%92%E6%A0%87%E8%AE%B0"><span class="nav-number">2.</span> <span class="nav-text">懒标记</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9D%BF%E5%AD%90"><span class="nav-number"></span> <span class="nav-text">板子</span></a></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">a48zhang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">6</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://a48zhang.github.io/2023/05/02/%E7%BA%BF%E6%AE%B5%E6%A0%91/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="a48zhang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="a48zhang's blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="线段树 | a48zhang's blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          线段树
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2023-05-02 18:59:01 / 修改时间：16:15:23" itemprop="dateCreated datePublished" datetime="2023-05-02T18:59:01+00:00">2023-05-02</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/DS/" itemprop="url" rel="index"><span itemprop="name">DS</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h2 id="线段树"><a href="#线段树" class="headerlink" title="线段树"></a>线段树</h2><p>能实现快速的区间查询、区间修改的数据结构。</p>
+<p>实现区间修改、区间查询等操作的时间复杂度为 $O(\log N)$。</p>
+<p>可以用来维护区间最大值、区间和、区间异或和等等。实际上，线段树的原理决定了其可以维护一切符合结合律的信息。（不符合结合律的运算？比方说，浮点数加法）</p>
+<p>很长、不是很好写，如果没有区间修改需要可以写树状数组。</p>
+<h1 id="例题"><a href="#例题" class="headerlink" title="例题"></a>例题</h1><h2 id="CF213769A"><a href="#CF213769A" class="headerlink" title="CF213769A"></a><a target="_blank" rel="noopener" href="https://codeforces.com/edu/course/2/lesson/4/1/practice/contest/273169/problem/A">CF213769A</a></h2><h3 id="建树"><a href="#建树" class="headerlink" title="建树"></a>建树</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="type">const</span> <span class="type">int</span> N = <span class="number">5e5</span>;</span><br><span class="line"><span class="meta">#<span class="keyword">define</span> ls(X) ((X) &lt;&lt; 1)</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> rs(X) ((X) &lt;&lt; 1 | 1)</span></span><br><span class="line"><span class="comment">// &lt;------------------------------&gt;</span></span><br><span class="line"><span class="type">int</span> a[N]; <span class="comment">// 原始数据</span></span><br><span class="line"><span class="keyword">struct</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">int</span> l, r, v;</span><br><span class="line">&#125; f[N &lt;&lt; <span class="number">2</span>]; <span class="comment">// 节点数需要乘4</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">push_up</span><span class="params">(<span class="type">int</span> pos)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="comment">// 将指定操作向上（向根）传递</span></span><br><span class="line">    f[pos].v = f[<span class="built_in">ls</span>(pos)].v + f[<span class="built_in">rs</span>(pos)].v;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">build</span><span class="params">(<span class="type">int</span> pos, <span class="type">int</span> l, <span class="type">int</span> r)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    f[pos].l = l, f[pos].r = r;</span><br><span class="line">    <span class="keyword">if</span> (l == r)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// 这里是树的叶子节点，对他直接赋值</span></span><br><span class="line">        f[pos].v = a[l];</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 对子树递归建树</span></span><br><span class="line">    <span class="type">int</span> mid = (l + r) / <span class="number">2</span>;</span><br><span class="line">    <span class="built_in">build</span>(<span class="built_in">ls</span>(pos), l, mid);</span><br><span class="line">    <span class="built_in">build</span>(<span class="built_in">rs</span>(pos), mid + <span class="number">1</span>, r);</span><br><span class="line">    <span class="built_in">push_down</span>(pos);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="查询"><a href="#查询" class="headerlink" title="查询"></a>查询</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">int</span> <span class="title">query</span><span class="params">(<span class="type">int</span> pos, <span class="type">int</span> l, <span class="type">int</span> r)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (f[pos].l &gt;= l &amp;&amp; f[pos].r &lt;= r)</span><br><span class="line">        <span class="keyword">return</span> f[pos].v;</span><br><span class="line">    <span class="comment">// 二分查找</span></span><br><span class="line">    <span class="type">int</span> mid = (f[pos].l + f[pos].r) / <span class="number">2</span>;</span><br><span class="line">    <span class="keyword">if</span> (l &gt; mid)</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">query</span>(<span class="built_in">rs</span>(pos), l, r);</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (r &lt;= mid)</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">query</span>(<span class="built_in">ls</span>(pos), l, r);</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">query</span>(<span class="built_in">ls</span>(pos), l, r) + <span class="built_in">query</span>(<span class="built_in">rs</span>(pos), l, r);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="普通的修改"><a href="#普通的修改" class="headerlink" title="普通的修改"></a>普通的修改</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">update</span><span class="params">(<span class="type">int</span> pos, <span class="type">int</span> l, <span class="type">int</span> r, <span class="type">int</span> k)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (f[pos].l &gt;= l &amp;&amp; f[pos].r &lt;= r)</span><br><span class="line">    &#123;</span><br><span class="line">        f[pos].t += k;</span><br><span class="line">        f[pos].v += k * (r - l + <span class="number">1</span>);</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="type">int</span> mid = (f[pos].l + f[pos].r) / <span class="number">2</span>;</span><br><span class="line">    <span class="keyword">if</span> (l &gt; mid)</span><br><span class="line">        <span class="built_in">update</span>(<span class="built_in">rs</span>(pos), l, r, k);</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (r &lt;= mid)</span><br><span class="line">        <span class="built_in">update</span>(<span class="built_in">ls</span>(pos), l, r, k);</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        <span class="built_in">update</span>(<span class="built_in">ls</span>(pos), l, mid, k), <span class="built_in">update</span>(<span class="built_in">rs</span>(pos), mid + <span class="number">1</span>, r, k);</span><br><span class="line">    <span class="built_in">push_up</span>(pos);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="懒标记"><a href="#懒标记" class="headerlink" title="懒标记"></a>懒标记</h2><p>当更新某一区间时，给维护该区间的节点打懒标记，不再把每个点都更新，以此实现优化。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> <span class="title class_">node</span></span><br><span class="line">&#123;</span><br><span class="line">    ll l, r, v, t; <span class="comment">// t 用于存储懒标记</span></span><br><span class="line">&#125; f[N &lt;&lt; <span class="number">2</span>];</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><code>push_down()</code>维护懒标记。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">inline</span> <span class="type">void</span> <span class="title">push_down</span><span class="params">(ll pos)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (!f[pos].t)</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    <span class="comment">// 向下传递懒标记</span></span><br><span class="line">    f[<span class="built_in">ls</span>(pos)].t += f[pos].t;</span><br><span class="line">    f[<span class="built_in">rs</span>(pos)].t += f[pos].t;</span><br><span class="line">    <span class="type">int</span> mid = (f[pos].l + f[pos].r) / <span class="number">2</span>;</span><br><span class="line">    <span class="comment">// 处理懒标记</span></span><br><span class="line">    <span class="comment">// 值 += 懒标记值 * 节点数</span></span><br><span class="line">    f[<span class="built_in">ls</span>(pos)].v += f[pos].t * (mid - f[<span class="built_in">ls</span>(pos)].l + <span class="number">1</span>); </span><br><span class="line">    f[<span class="built_in">rs</span>(pos)].v += f[pos].t * (f[<span class="built_in">rs</span>(pos)].r - mid);</span><br><span class="line">    <span class="comment">// 去掉懒标记 因为已经传下去了</span></span><br><span class="line">    f[pos].t = <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">update</span><span class="params">(<span class="type">int</span> pos, <span class="type">int</span> l, <span class="type">int</span> r, ll k)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (f[pos].l &gt;= l &amp;&amp; f[pos].r &lt;= r)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// 更新只与现在的节点有关</span></span><br><span class="line">        f[pos].t += k; <span class="comment">// 更新懒标记</span></span><br><span class="line">        f[pos].v += k * (r - l + <span class="number">1</span>);</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">push_down</span>(pos); <span class="comment">// 注意</span></span><br><span class="line">    <span class="type">int</span> mid = (f[pos].l + f[pos].r) / <span class="number">2</span>;</span><br><span class="line">    <span class="keyword">if</span> (l &gt; mid)</span><br><span class="line">        <span class="built_in">update</span>(<span class="built_in">rs</span>(pos), l, r, k);</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (r &lt;= mid)</span><br><span class="line">        <span class="built_in">update</span>(<span class="built_in">ls</span>(pos), l, r, k);</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        <span class="built_in">update</span>(<span class="built_in">ls</span>(pos), l, mid, k), <span class="built_in">update</span>(<span class="built_in">rs</span>(pos), mid + <span class="number">1</span>, r, k);</span><br><span class="line">    <span class="built_in">push_up</span>(pos);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">ll <span class="title">query</span><span class="params">(<span class="type">int</span> pos, <span class="type">int</span> l, <span class="type">int</span> r)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="built_in">push_down</span>(pos); <span class="comment">// 注意</span></span><br><span class="line">    <span class="keyword">if</span> (f[pos].l &gt;= l &amp;&amp; f[pos].r &lt;= r)</span><br><span class="line">        <span class="keyword">return</span> f[pos].v;</span><br><span class="line">    <span class="type">int</span> mid = (f[pos].l + f[pos].r) / <span class="number">2</span>;</span><br><span class="line">    <span class="keyword">if</span> (l &gt; mid)</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">query</span>(<span class="built_in">rs</span>(pos), l, r);</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (r &lt;= mid)</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">query</span>(<span class="built_in">ls</span>(pos), l, r);</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">query</span>(<span class="built_in">ls</span>(pos), l, mid) + <span class="built_in">query</span>(<span class="built_in">rs</span>(pos), mid + <span class="number">1</span>, r);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="板子"><a href="#板子" class="headerlink" title="板子"></a>板子</h1><p>默认维护的是区间和。构造函数接受两个参数，原始数组大小和原始数组（long long）。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">SegTree</span></span><br><span class="line">&#123;</span><br><span class="line">  <span class="keyword">private</span>:</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">push_up</span><span class="params">(<span class="type">int</span> pos)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="comment">// modify here</span></span><br><span class="line">        f[pos].v = f[<span class="built_in">ls</span>(pos)].v + f[<span class="built_in">rs</span>(pos)].v;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">inline</span> <span class="type">void</span> <span class="title">push_down</span><span class="params">(<span class="type">long</span> <span class="type">long</span> pos)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (!f[pos].t)</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        f[<span class="built_in">ls</span>(pos)].t += f[pos].t;</span><br><span class="line">        f[<span class="built_in">rs</span>(pos)].t += f[pos].t;</span><br><span class="line">        <span class="type">int</span> mid = (f[pos].l + f[pos].r) / <span class="number">2</span>;</span><br><span class="line">        f[<span class="built_in">ls</span>(pos)].v += f[pos].t * (mid - f[<span class="built_in">ls</span>(pos)].l + <span class="number">1</span>); <span class="comment">// modify here</span></span><br><span class="line">        f[<span class="built_in">rs</span>(pos)].v += f[pos].t * (f[<span class="built_in">rs</span>(pos)].r - mid);     <span class="comment">// modify here</span></span><br><span class="line">        f[pos].t = <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="type">long</span> <span class="type">long</span> <span class="title">query</span><span class="params">(<span class="type">int</span> pos, <span class="type">int</span> l, <span class="type">int</span> r)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="built_in">push_down</span>(pos);</span><br><span class="line">        <span class="keyword">if</span> (f[pos].l &gt;= l &amp;&amp; f[pos].r &lt;= r)</span><br><span class="line">            <span class="keyword">return</span> f[pos].v;</span><br><span class="line">        <span class="type">int</span> mid = (f[pos].l + f[pos].r) / <span class="number">2</span>;</span><br><span class="line">        <span class="keyword">if</span> (l &gt; mid)</span><br><span class="line">            <span class="keyword">return</span> <span class="built_in">query</span>(<span class="built_in">rs</span>(pos), l, r);</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (r &lt;= mid)</span><br><span class="line">            <span class="keyword">return</span> <span class="built_in">query</span>(<span class="built_in">ls</span>(pos), l, r);</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">            <span class="comment">// modify here</span></span><br><span class="line">            <span class="keyword">return</span> <span class="built_in">query</span>(<span class="built_in">ls</span>(pos), l, mid) + <span class="built_in">query</span>(<span class="built_in">rs</span>(pos), mid + <span class="number">1</span>, r);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">update</span><span class="params">(<span class="type">int</span> pos, <span class="type">int</span> l, <span class="type">int</span> r, <span class="type">long</span> <span class="type">long</span> k)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (f[pos].l &gt;= l &amp;&amp; f[pos].r &lt;= r)</span><br><span class="line">        &#123;</span><br><span class="line">            f[pos].t += k;</span><br><span class="line">            f[pos].v += k * (r - l + <span class="number">1</span>);</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="built_in">push_down</span>(pos);</span><br><span class="line">        <span class="type">int</span> mid = (f[pos].l + f[pos].r) / <span class="number">2</span>;</span><br><span class="line">        <span class="keyword">if</span> (l &gt; mid)</span><br><span class="line">            <span class="built_in">update</span>(<span class="built_in">rs</span>(pos), l, r, k);</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (r &lt;= mid)</span><br><span class="line">            <span class="built_in">update</span>(<span class="built_in">ls</span>(pos), l, r, k);</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">            <span class="built_in">update</span>(<span class="built_in">ls</span>(pos), l, mid, k), <span class="built_in">update</span>(<span class="built_in">rs</span>(pos), mid + <span class="number">1</span>, r, k);</span><br><span class="line">        <span class="built_in">push_up</span>(pos);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">struct</span> <span class="title class_">node</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="type">long</span> <span class="type">long</span> l, r, v, t;</span><br><span class="line">    &#125;;</span><br><span class="line">    <span class="type">long</span> <span class="type">long</span> *a;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">SegTree</span>(<span class="type">long</span> <span class="type">long</span> s, <span class="type">long</span> <span class="type">long</span> *ori)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">this</span>-&gt;size = s;</span><br><span class="line">        a = ori;</span><br><span class="line">        f = (node *)<span class="built_in">malloc</span>((s * <span class="number">4</span> + <span class="number">10</span>) * <span class="built_in">sizeof</span>(node));</span><br><span class="line">        <span class="built_in">build</span>(<span class="number">1</span>, <span class="number">1</span>, s);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">private</span>:</span><br><span class="line">    <span class="type">int</span> size = <span class="number">1e6</span> + <span class="number">5</span>;</span><br><span class="line">    node *f;</span><br><span class="line">    <span class="function"><span class="keyword">inline</span> <span class="type">int</span> <span class="title">ls</span><span class="params">(<span class="type">int</span> p)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> p &lt;&lt; <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">inline</span> <span class="type">int</span> <span class="title">rs</span><span class="params">(<span class="type">int</span> p)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> p &lt;&lt; <span class="number">1</span> | <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">build</span><span class="params">(<span class="type">int</span> pos, <span class="type">int</span> l, <span class="type">int</span> r)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        f[pos] = &#123;l, r, <span class="number">0</span>, <span class="number">0</span>&#125;;</span><br><span class="line">        <span class="keyword">if</span> (l == r)</span><br><span class="line">        &#123;</span><br><span class="line">            f[pos].v = a[l];</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="type">int</span> mid = ((l + r) &gt;&gt; <span class="number">1</span>);</span><br><span class="line">        <span class="built_in">build</span>(<span class="built_in">ls</span>(pos), l, mid);</span><br><span class="line">        <span class="built_in">build</span>(<span class="built_in">rs</span>(pos), mid + <span class="number">1</span>, r);</span><br><span class="line">        <span class="built_in">push_up</span>(pos);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Competitive-Programming/" rel="tag"># Competitive Programming</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2023/05/02/%E5%B9%B6%E6%9F%A5%E9%9B%86/" rel="prev" title="并查集">
+                  <i class="fa fa-chevron-left"></i> 并查集
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">a48zhang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>
