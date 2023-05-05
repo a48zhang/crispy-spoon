@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"a48zhang.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.15.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="Defer, Panic, Recover">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Golang中的异常处理">
+<meta property="og:url" content="https://a48zhang.github.io/2023/05/03/Golang%E4%B8%AD%E7%9A%84%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86/index.html">
+<meta property="og:site_name" content="a48zhang&#39;s blog">
+<meta property="og:description" content="Defer, Panic, Recover">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://a48zhang.github.io/2023/05/03/Golang%E4%B8%AD%E7%9A%84%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86/1683112281963.jpeg">
+<meta property="article:published_time" content="2023-05-03T00:14:09.000Z">
+<meta property="article:modified_time" content="2023-05-05T02:01:54.096Z">
+<meta property="article:author" content="a48zhang">
+<meta property="article:tag" content="golang">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://a48zhang.github.io/2023/05/03/Golang%E4%B8%AD%E7%9A%84%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86/1683112281963.jpeg">
+
+
+<link rel="canonical" href="https://a48zhang.github.io/2023/05/03/Golang%E4%B8%AD%E7%9A%84%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://a48zhang.github.io/2023/05/03/Golang%E4%B8%AD%E7%9A%84%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86/","path":"2023/05/03/Golang中的异常处理/","title":"Golang中的异常处理"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Golang中的异常处理 | a48zhang's blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">a48zhang's blog</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86"><span class="nav-number">1.</span> <span class="nav-text">异常处理</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Defer"><span class="nav-number">1.1.</span> <span class="nav-text">Defer</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0"><span class="nav-number">1.1.1.</span> <span class="nav-text">实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B3%A8%E6%84%8F"><span class="nav-number">1.1.2.</span> <span class="nav-text">注意</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#defer-%E4%B8%8E-return"><span class="nav-number">1.1.3.</span> <span class="nav-text">defer 与 return</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B0%8F%E7%BB%83%E4%B9%A0%EF%BC%81"><span class="nav-number">1.1.4.</span> <span class="nav-text">小练习！</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#defer%E7%9A%84%E7%94%A8%E9%80%94"><span class="nav-number">1.1.5.</span> <span class="nav-text">defer的用途</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Panic"><span class="nav-number">1.2.</span> <span class="nav-text">Panic</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Recover"><span class="nav-number">1.3.</span> <span class="nav-text">Recover</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8E%9F%E7%90%86"><span class="nav-number">1.3.1.</span> <span class="nav-text">原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B3%A8%E6%84%8F-1"><span class="nav-number">1.3.2.</span> <span class="nav-text">注意</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">2.</span> <span class="nav-text">参考</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">a48zhang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">7</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://a48zhang.github.io/2023/05/03/Golang%E4%B8%AD%E7%9A%84%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="a48zhang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="a48zhang's blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Golang中的异常处理 | a48zhang's blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Golang中的异常处理
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2023-05-03 00:14:09" itemprop="dateCreated datePublished" datetime="2023-05-03T00:14:09+00:00">2023-05-03</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-05-05 02:01:54" itemprop="dateModified" datetime="2023-05-05T02:01:54+00:00">2023-05-05</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Programming-Skills/" itemprop="url" rel="index"><span itemprop="name">Programming Skills</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="异常处理"><a href="#异常处理" class="headerlink" title="异常处理"></a>异常处理</h1><img src="/2023/05/03/Golang%E4%B8%AD%E7%9A%84%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86/1683112281963.jpeg" class="">
+
+<p>你或许受够了丑陋的 <code>if  err != nil &#123;...&#125;</code>，那么来聊一聊不太常见的</p>
+<h2 id="Defer"><a href="#Defer" class="headerlink" title="Defer"></a>Defer</h2><h3 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h3><p>下面是<code>_defer</code>结构的源代码。不细说，因为我也不大懂。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// A _defer holds an entry on the list of deferred calls.</span></span><br><span class="line"><span class="comment">// If you add a field here, add code to clear it in freedefer and deferProcStack</span></span><br><span class="line"><span class="comment">// This struct must match the code in cmd/compile/internal/gc/reflect.go:deferstruct</span></span><br><span class="line"><span class="comment">// and cmd/compile/internal/gc/ssa.go:(*state).call.</span></span><br><span class="line"><span class="comment">// Some defers will be allocated on the stack and some on the heap.</span></span><br><span class="line"><span class="comment">// All defers are logically part of the stack, so write barriers to</span></span><br><span class="line"><span class="comment">// initialize them are not required. All defers must be manually scanned,</span></span><br><span class="line"><span class="comment">// and for heap defers, marked.</span></span><br><span class="line"><span class="keyword">type</span> _defer <span class="keyword">struct</span> &#123;</span><br><span class="line">   siz     <span class="type">int32</span> <span class="comment">// includes both arguments and results</span></span><br><span class="line">   started <span class="type">bool</span></span><br><span class="line">   heap    <span class="type">bool</span></span><br><span class="line">   <span class="comment">// openDefer indicates that this _defer is for a frame with open-coded</span></span><br><span class="line">   <span class="comment">// defers. We have only one defer record for the entire frame (which may</span></span><br><span class="line">   <span class="comment">// currently have 0, 1, or more defers active).</span></span><br><span class="line">   openDefer <span class="type">bool</span></span><br><span class="line">   sp        <span class="type">uintptr</span>  <span class="comment">// sp at time of defer</span></span><br><span class="line">   pc        <span class="type">uintptr</span>  <span class="comment">// pc at time of defer</span></span><br><span class="line">   fn        *funcval <span class="comment">// can be nil for open-coded defers</span></span><br><span class="line">   _panic    *_panic  <span class="comment">// panic that is running defer</span></span><br><span class="line">   link      *_defer</span><br><span class="line"></span><br><span class="line">   <span class="comment">// If openDefer is true, the fields below record values about the stack</span></span><br><span class="line">   <span class="comment">// frame and associated function that has the open-coded defer(s). sp</span></span><br><span class="line">   <span class="comment">// above will be the sp for the frame, and pc will be address of the</span></span><br><span class="line">   <span class="comment">// deferreturn call in the function.</span></span><br><span class="line">   fd   unsafe.Pointer <span class="comment">// funcdata for the function associated with the frame</span></span><br><span class="line">   varp <span class="type">uintptr</span>        <span class="comment">// value of varp for the stack frame</span></span><br><span class="line">   <span class="comment">// framepc is the current pc associated with the stack frame. Together,</span></span><br><span class="line">   <span class="comment">// with sp above (which is the sp associated with the stack frame),</span></span><br><span class="line">   <span class="comment">// framepc/sp can be used as pc/sp pair to continue a stack trace via</span></span><br><span class="line">   <span class="comment">// gentraceback().</span></span><br><span class="line">   framepc <span class="type">uintptr</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>defer chain 是一条单向链表（看上面的 <code>link</code>）。很多文章说<code>defer</code>这里是一个<strong>栈</strong>，其实我们在聊同一件事。</p>
+<pre class="mermaid">graph LR
+A[goroutine]
+B[defer func 3]
+C[defer func 2]
+D[defer func 1]
+A --> B --> C --> D</pre>
+
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">f</span><span class="params">()</span></span> &#123;</span><br><span class="line">    <span class="keyword">defer</span> f()</span><br><span class="line">    <span class="keyword">return</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    f()</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// runtime: goroutine stack exceeds 1000000000-byte limit</span></span><br><span class="line"><span class="comment">// runtime: sp=0xc0200f9380 stack=[0xc0200f8000, 0xc0400f8000]</span></span><br><span class="line"><span class="comment">// fatal error: stack overflow</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h3><ol>
+<li>Defer 语句中函数的参数是在 defer 语句声明时确定的。</li>
+<li>当函数返回后，defer 声明的函数按照后进先出 (Last In First Out) 的顺序执行。</li>
+<li>如果函数返回的是命名返回值（named return values），defer 声明的函数调用可以读写这个返回值。（见小练习！<code>foo3()</code>）</li>
+</ol>
+<h3 id="defer-与-return"><a href="#defer-与-return" class="headerlink" title="defer 与 return"></a>defer 与 return</h3><p>Go语言的函数中<code>return</code>语句在底层并不是原子操作，它分为给<code>返回值赋值</code>和<code>RET指令</code>两步。而<code>defer</code>语句执行的时机就<strong>在返回值赋值操作后，RET指令执行前</strong>。</p>
+<pre class="mermaid">graph LR
+A[返回值 = x]
+B[执行defer]
+C[ret]
+A --> B --> C</pre>
+
+
+
+
+<blockquote>
+<p>可容纳 64 位（包括 <strong><code>__m64</code></strong> 类型）的标量返回值是通过 RAX 返回的。  非标量类型（包括浮点类型、双精度类型和向量类型，例如 <a target="_blank" rel="noopener" href="https://learn.microsoft.com/zh-cn/cpp/cpp/m128?view=msvc-170"><code>__m128</code></a>、<a target="_blank" rel="noopener" href="https://learn.microsoft.com/zh-cn/cpp/cpp/m128i?view=msvc-170"><code>__m128i</code></a>、<a target="_blank" rel="noopener" href="https://learn.microsoft.com/zh-cn/cpp/cpp/m128d?view=msvc-170"><code>__m128d</code></a>）以 XMM0 的形式返回。 </p>
+<p> [Microsoft Docs](<a target="_blank" rel="noopener" href="https://learn.microsoft.com/zh-cn/cpp/build/x64-calling-convention?view=msvc-170#return-values">x64 调用约定 | Microsoft Learn</a>)</p>
+</blockquote>
+<h3 id="小练习！"><a href="#小练习！" class="headerlink" title="小练习！"></a>小练习！</h3><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="string">&quot;fmt&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">foo1</span><span class="params">(i <span class="type">int</span>)</span></span> <span class="type">int</span> &#123;</span><br><span class="line">	<span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123; i++ &#125;()</span><br><span class="line">	fmt.Println(<span class="string">&quot;foo1:&quot;</span>, i)</span><br><span class="line">	<span class="keyword">defer</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123; i++ &#125;()</span><br><span class="line">	<span class="keyword">return</span> i</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">foo2</span><span class="params">(i <span class="type">int</span>)</span></span> <span class="type">int</span> &#123;</span><br><span class="line">	<span class="keyword">defer</span> <span class="function"><span class="keyword">func</span><span class="params">(i *<span class="type">int</span>)</span></span> &#123; *i++ &#125;(&amp;i)</span><br><span class="line">	fmt.Println(<span class="string">&quot;foo2:&quot;</span>, i)</span><br><span class="line">	<span class="keyword">return</span> i</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">foo3</span><span class="params">(i <span class="type">int</span>)</span></span> (x <span class="type">int</span>) &#123;</span><br><span class="line">	<span class="keyword">defer</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123; x++ &#125;()</span><br><span class="line">	fmt.Println(<span class="string">&quot;foo3:&quot;</span>, x)</span><br><span class="line">	<span class="keyword">return</span> i</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	i := <span class="number">1</span></span><br><span class="line">	fmt.Printf(<span class="string">&quot;main: %d\n&quot;</span>, foo1(i))</span><br><span class="line">	fmt.Printf(<span class="string">&quot;main: %d\n&quot;</span>, foo2(i))</span><br><span class="line">	fmt.Printf(<span class="string">&quot;main: %d\n&quot;</span>, foo3(i))</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Output:</span></span><br><span class="line"><span class="comment">// foo1: 2</span></span><br><span class="line"><span class="comment">// main: 2</span></span><br><span class="line"><span class="comment">// foo2: 1</span></span><br><span class="line"><span class="comment">// main: 1</span></span><br><span class="line"><span class="comment">// foo3: 0</span></span><br><span class="line"><span class="comment">// main: 2</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// Why?</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>提示：你可能需要了解命名返回值函数。</p>
+</blockquote>
+<h3 id="defer的用途"><a href="#defer的用途" class="headerlink" title="defer的用途"></a>defer的用途</h3><ul>
+<li>释放资源（数据库连接，文件句柄等）</li>
+<li>释放<strong>读写锁</strong></li>
+<li>视情况修改返回值</li>
+<li>执行<code>recover()</code></li>
+</ul>
+<h2 id="Panic"><a href="#Panic" class="headerlink" title="Panic"></a>Panic</h2><p><code>panic()</code>会立即造成一个运行时错误。如果这个错误没有被捕获，程序会中止。十分显然的，defer语句会在程序中止前运行。</p>
+<p>产生<strong>运行时</strong>错误意味着某个 <code>goroutine</code> 可以直接中止整个程序，所以你应该慎用。</p>
+<blockquote>
+<p>This is only an example but real library functions should avoid <code>panic</code>. If the problem can be masked or worked around, it’s always better to let things continue to run rather than taking down the whole program. One possible counterexample is during initialization: if the library truly cannot set itself up, it might be reasonable to panic, so to speak. 		—— Effective Go</p>
+</blockquote>
+<p>有时你的程序会遇到一些致命错误（比如，你连不上数据库），你可以继续运行，但没什么意义。这时，直接<code>panic()</code>或许比较合理。</p>
+<h2 id="Recover"><a href="#Recover" class="headerlink" title="Recover"></a>Recover</h2><p>解决一切<code>panic</code>并让正常控制流夺回控制权，无论<code>panic</code>是内部的（数组越界之类的）或是你调用 <code>panic()</code>造成的。</p>
+<p>正常情况下，调用 recover 函数将返回 nil 且没有任何效果。只有当前 goroutine 为 panicking 状态，调用 recover 函数将捕获 panic 的值并且回到正常控制流。</p>
+<p>特别的：</p>
+<ul>
+<li>对 <code>Goroutine Dead Lock</code>无效。实际上，所有的 <code>Fatal Error</code> 都无效。（<code>runtime</code> 都炸了，谁还能给你<code>recover</code>呢）</li>
+<li>对子协程的<code>panic</code>无效。 <code>recover</code>只作用于当前<code>goroutine</code>的<code>_panic</code>链表</li>
+<li>对 <code>os.Exit()</code>无效。（那是正常退出，无论程序返回值是多少 —— 那不是<code>runtime</code>该操心的事情）</li>
+</ul>
+<h3 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h3><p>当 panic 被调用后，程序将立刻终止当前函数的执行，并开始自底向上的回溯 goroutine 的栈，运行defer函数。 若回溯到达 goroutine 栈的顶端，程序就会终止。调用 recover 将停止回溯过程，并返回传入 panic 的实参。 由于在回溯时只有defer函数能够运行，因此 recover 只能在defer中才有效。</p>
+<h3 id="注意-1"><a href="#注意-1" class="headerlink" title="注意"></a>注意</h3><ul>
+<li><code>defer</code>一定要在可能引发<code>panic</code>的<strong>语句之前定义</strong>。</li>
+</ul>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// goroutine 源代码节选</span></span><br><span class="line"><span class="keyword">type</span> g <span class="keyword">struct</span> &#123;</span><br><span class="line">	<span class="comment">// Stack parameters.</span></span><br><span class="line">	<span class="comment">// stack describes the actual stack memory: [stack.lo, stack.hi).</span></span><br><span class="line">	<span class="comment">// stackguard0 is the stack pointer compared in the Go stack growth prologue.</span></span><br><span class="line">	<span class="comment">// It is stack.lo+StackGuard normally, but can be StackPreempt to trigger a preemption.</span></span><br><span class="line">	<span class="comment">// stackguard1 is the stack pointer compared in the C stack growth prologue.</span></span><br><span class="line">	<span class="comment">// It is stack.lo+StackGuard on g0 and gsignal stacks.</span></span><br><span class="line">	<span class="comment">// It is ~0 on other goroutine stacks, to trigger a call to morestackc (and crash).</span></span><br><span class="line">	stack       stack   <span class="comment">// offset known to runtime/cgo</span></span><br><span class="line">	stackguard0 <span class="type">uintptr</span> <span class="comment">// offset known to liblink</span></span><br><span class="line">	stackguard1 <span class="type">uintptr</span> <span class="comment">// offset known to liblink</span></span><br><span class="line"></span><br><span class="line">	_panic    *_panic <span class="comment">// innermost panic - offset known to liblink</span></span><br><span class="line">	_defer    *_defer <span class="comment">// innermost defer</span></span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><ul>
+<li><p><a target="_blank" rel="noopener" href="https://golang.google.cn/doc/effective_go#panic">Effective Go: Panic</a></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://golang.google.cn/blog/defer-panic-and-recover">the Go Blog: Defer, Panic, and Recover</a></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://github.com/golang/go/blob/master/src/runtime/runtime2.go#L414">go&#x2F;runtime2.go</a></p>
+</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/golang/" rel="tag"># golang</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2023/05/02/%E7%BA%BF%E6%AE%B5%E6%A0%91/" rel="prev" title="线段树">
+                  <i class="fa fa-chevron-left"></i> 线段树
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2023/05/05/%E6%A0%91%E5%BD%A2DP/" rel="next" title="树形DP">
+                  树形DP <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">a48zhang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/9.4.3/mermaid.min.js","integrity":"sha256-e0o3JYsdjqKajf9eOe22FhioYSz9WofRY4dLKo3F6do="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>
