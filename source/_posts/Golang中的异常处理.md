@@ -10,9 +10,11 @@ excerpt: Defer, Panic, Recover
 
 {% asset_img 1683112281963.jpeg %}
 
-你或许受够了丑陋的 `if  err != nil {...}`，那么来聊一聊不太常见的
+你或许受够了丑陋的 `if  err != nil {...}`，那么来聊一聊不太常见的`defer`,`panic`,`recover()`
 
 ## Defer
+
+在函数结束之前执行指定的函数。
 
 ### 实现
 
@@ -20,38 +22,23 @@ excerpt: Defer, Panic, Recover
 
 ```go
 // A _defer holds an entry on the list of deferred calls.
-// If you add a field here, add code to clear it in freedefer and deferProcStack
-// This struct must match the code in cmd/compile/internal/gc/reflect.go:deferstruct
-// and cmd/compile/internal/gc/ssa.go:(*state).call.
+// If you add a field here, add code to clear it in deferProcStack.
+// This struct must match the code in cmd/compile/internal/ssagen/ssa.go:deferstruct
+// and cmd/compile/internal/ssagen/ssa.go:(*state).call.
 // Some defers will be allocated on the stack and some on the heap.
 // All defers are logically part of the stack, so write barriers to
 // initialize them are not required. All defers must be manually scanned,
 // and for heap defers, marked.
 type _defer struct {
-   siz     int32 // includes both arguments and results
-   started bool
-   heap    bool
-   // openDefer indicates that this _defer is for a frame with open-coded
-   // defers. We have only one defer record for the entire frame (which may
-   // currently have 0, 1, or more defers active).
-   openDefer bool
-   sp        uintptr  // sp at time of defer
-   pc        uintptr  // pc at time of defer
-   fn        *funcval // can be nil for open-coded defers
-   _panic    *_panic  // panic that is running defer
-   link      *_defer
+	// ...
+    
+	sp        uintptr // sp at time of defer
+	pc        uintptr // pc at time of defer
+	fn        func()  // can be nil for open-coded defers
+	_panic    *_panic // panic that is running defer
+	link      *_defer // next defer on G; can point to either heap or stack!
 
-   // If openDefer is true, the fields below record values about the stack
-   // frame and associated function that has the open-coded defer(s). sp
-   // above will be the sp for the frame, and pc will be address of the
-   // deferreturn call in the function.
-   fd   unsafe.Pointer // funcdata for the function associated with the frame
-   varp uintptr        // value of varp for the stack frame
-   // framepc is the current pc associated with the stack frame. Together,
-   // with sp above (which is the sp associated with the stack frame),
-   // framepc/sp can be used as pc/sp pair to continue a stack trace via
-   // gentraceback().
-   framepc uintptr
+	// ...
 }
 ```
 
@@ -71,7 +58,6 @@ package main
 
 func f() {
     defer f()
-    return
 }
 
 func main() {
@@ -85,17 +71,14 @@ func main() {
 
 ### 注意
 
-1. Defer 语句中函数的参数是在 defer 语句声明时确定的。
+1. `defer` 语句中函数的参数是在 `defer` 语句声明时确定的。
 2. 当函数返回后，defer 声明的函数按照后进先出 (Last In First Out) 的顺序执行。
-3. 如果函数返回的是命名返回值（named return values），defer 声明的函数调用可以读写这个返回值。（见小练习！`foo3()`）
-
-
+3. 如果函数返回的是命名返回值（named return values），`defer` 声明的函数调用可以读写这个返回值。（见小练习！`foo3()`）
+4. `os.Exit()`会造成程序立即终止，此时`defer`不会被执行。
 
 ### defer 与 return
 
-Go语言的函数中`return`语句在底层并不是原子操作，它分为给`返回值赋值`和`RET指令`两步。而`defer`语句执行的时机就**在返回值赋值操作后，RET指令执行前**。
-
-
+Go语言的函数中`return`语句在底层并不是原子操作，它分为**给返回值赋值**和**RET**两步。而`defer`语句执行的时机就**在返回值赋值操作后，RET指令执行前**。
 
 ```mermaid
 graph LR
@@ -104,8 +87,6 @@ B[执行defer]
 C[ret]
 A --> B --> C 
 ```
-
-
 
 
 > 可容纳 64 位（包括 **`__m64`** 类型）的标量返回值是通过 RAX 返回的。  非标量类型（包括浮点类型、双精度类型和向量类型，例如 [`__m128`](https://learn.microsoft.com/zh-cn/cpp/cpp/m128?view=msvc-170)、[`__m128i`](https://learn.microsoft.com/zh-cn/cpp/cpp/m128i?view=msvc-170)、[`__m128d`](https://learn.microsoft.com/zh-cn/cpp/cpp/m128d?view=msvc-170)）以 XMM0 的形式返回。 
@@ -159,9 +140,9 @@ func main() {
 
 ```
 
-> 提示：你可能需要了解命名返回值函数。
+> 提示：你可能需要了解**命名返回值函数**。
 
-### defer的用途
+### `defer`的用途
 
 * 释放资源（数据库连接，文件句柄等）
 * 释放**读写锁**
@@ -178,39 +159,56 @@ func main() {
 
 有时你的程序会遇到一些致命错误（比如，你连不上数据库），你可以继续运行，但没什么意义。这时，直接`panic()`或许比较合理。
 
+### 实现
+
+```go
+// runtime/runtime2.go
+
+// A _panic holds information about an active panic.
+//
+// A _panic value must only ever live on the stack.
+//
+// The argp and link fields are stack pointers, but don't need special
+// handling during stack growth: because they are pointer-typed and
+// _panic values only live on the stack, regular stack pointer
+// adjustment takes care of them.
+type _panic struct {
+	argp      unsafe.Pointer // pointer to arguments of deferred call run during panic; cannot move - known to liblink
+	arg       any            // argument to panic
+	link      *_panic        // link to earlier panic
+	pc        uintptr        // where to return to in runtime if this panic is bypassed
+	sp        unsafe.Pointer // where to return to in runtime if this panic is bypassed
+	recovered bool           // whether this panic is over
+	aborted   bool           // the panic was aborted
+	goexit    bool
+}
+```
+
 ## Recover
 
-解决一切`panic`并让正常控制流夺回控制权，无论`panic`是内部的（数组越界之类的）或是你调用 `panic()`造成的。
+解决眼下的`panic`并让正常控制流夺回控制权，无论`panic`是内部的（数组越界之类的）或是你蓄意 `panic()`造成的。
 
-正常情况下，调用 recover 函数将返回 nil 且没有任何效果。只有当前 goroutine 为 panicking 状态，调用 recover 函数将捕获 panic 的值并且回到正常控制流。
+正常情况下，调用 recover 函数将返回 nil 且没有任何效果。只有当前 `goroutine` 为 `panicking` 状态，调用 `recover` 函数将捕获 `panic` 的值并且回到正常控制流。
 
 特别的：
 
 * 对 `Goroutine Dead Lock`无效。实际上，所有的 `Fatal Error` 都无效。（`runtime` 都炸了，谁还能给你`recover`呢）
-* 对子协程的`panic`无效。 `recover`只作用于当前`goroutine`的`_panic`链表
-* 对 `os.Exit()`无效。（那是正常退出，无论程序返回值是多少 —— 那不是`runtime`该操心的事情）
+* 对子协程的`panic`无效。 `recover`只作用于当前`goroutine`的`_panic`链表。
+* 对 `os.Exit()`无效。
 
 ### 原理
 
-当 panic 被调用后，程序将立刻终止当前函数的执行，并开始自底向上的回溯 goroutine 的栈，运行defer函数。 若回溯到达 goroutine 栈的顶端，程序就会终止。调用 recover 将停止回溯过程，并返回传入 panic 的实参。 由于在回溯时只有defer函数能够运行，因此 recover 只能在defer中才有效。
+当 `panic` 被调用后，程序将立刻终止当前函数的执行，并开始自底向上的回溯 `goroutine` 的栈，运行`defer`函数。 若回溯到达 `goroutine` 栈的顶端，程序就会终止。调用 `recover` 将停止回溯过程，并返回传入 `panic` 的实参。由于在回溯时只有`defer`函数能够运行，因此 `recover` 只能在`defer`中才有效。
 
 ### 注意
 
 * `defer`一定要在可能引发`panic`的**语句之前定义**。
 
+## `goroutine` 源代码节选
+
 ```go
-// goroutine 源代码节选
 type g struct {
-	// Stack parameters.
-	// stack describes the actual stack memory: [stack.lo, stack.hi).
-	// stackguard0 is the stack pointer compared in the Go stack growth prologue.
-	// It is stack.lo+StackGuard normally, but can be StackPreempt to trigger a preemption.
-	// stackguard1 is the stack pointer compared in the C stack growth prologue.
-	// It is stack.lo+StackGuard on g0 and gsignal stacks.
-	// It is ~0 on other goroutine stacks, to trigger a call to morestackc (and crash).
-	stack       stack   // offset known to runtime/cgo
-	stackguard0 uintptr // offset known to liblink
-	stackguard1 uintptr // offset known to liblink
+	// ...
 
 	_panic    *_panic // innermost panic - offset known to liblink
 	_defer    *_defer // innermost defer
