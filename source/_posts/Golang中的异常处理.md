@@ -196,7 +196,9 @@ type _panic struct {
 * 对子协程的`panic`无效。 `recover`只作用于当前`goroutine`的`_panic`链表。
 * 对 `os.Exit()`无效。
 
-### 原理
+### 原理 
+
+// 这部分好像有问题，待改动
 
 当 `panic` 被调用后，程序将立刻终止当前函数的执行，并开始自底向上的回溯 `goroutine` 的栈，运行`defer`函数。 若回溯到达 `goroutine` 栈的顶端，程序就会终止。调用 `recover` 将停止回溯过程，并返回传入 `panic` 的实参。由于在回溯时只有`defer`函数能够运行，因此 `recover` 只能在`defer`中才有效。
 
