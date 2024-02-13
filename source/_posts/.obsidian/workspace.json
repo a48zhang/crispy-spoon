@@ -1,0 +1,166 @@
+{
+  "main": {
+    "id": "b6ce421d889dc25f",
+    "type": "split",
+    "children": [
+      {
+        "id": "2c3e58bb35552fb3",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "f1fc6fff72b76664",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "CF-ITMO公开课-并查集-STEP1.md",
+                "mode": "source",
+                "source": false
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "1d1e059444c61637",
+    "type": "split",
+    "children": [
+      {
+        "id": "9ae2c5fa107c28e8",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "400c876b615ef832",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical"
+              }
+            }
+          },
+          {
+            "id": "8a65dc5e4bcf6208",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              }
+            }
+          },
+          {
+            "id": "426a2ffdb48b11d4",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {}
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "e88c025d8954bdd7",
+    "type": "split",
+    "children": [
+      {
+        "id": "e100f87cc084a5c5",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "da9bed659e3880db",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "CF-ITMO公开课-并查集-STEP1.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              }
+            }
+          },
+          {
+            "id": "00ba1701f41f618c",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "CF-ITMO公开课-并查集-STEP1.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              }
+            }
+          },
+          {
+            "id": "21267be60f2547e1",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true
+              }
+            }
+          },
+          {
+            "id": "d042b95e183de150",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "CF-ITMO公开课-并查集-STEP1.md"
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "markdown-importer:打开 Markdown 格式转换器": false,
+      "switcher:打开快速切换": false,
+      "graph:查看关系图谱": false,
+      "canvas:新建白板": false,
+      "daily-notes:打开/创建今天的日记": false,
+      "templates:插入模板": false,
+      "command-palette:打开命令面板": false
+    }
+  },
+  "active": "f1fc6fff72b76664",
+  "lastOpenFiles": [
+    "CP.md",
+    "hexo文档.md",
+    "算法竞赛资料收藏.md",
+    "Manacher回文串算法.md",
+    "CF-ITMO公开课-并查集-STEP1.md",
+    "如何用STL优雅的切算法题.md",
+    "并查集.md",
+    "线段树.md",
+    "C-中的编译期计算.md",
+    "一段古怪的代码.md",
+    "generic.md",
+    "C-STL学习笔记.md",
+    "树形DP.md"
+  ]
+}

@@ -1,8 +1,9 @@
 ---
 title: Manacher回文串算法
 date: 2023-07-12 11:08:35
-tags: algorithm
-categories: Competitive programming
+tags:
+  - algorithm
+categories: Competitive Programming
 excerpt: 马拉车。
 ---
 
