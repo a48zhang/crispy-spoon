@@ -4,6 +4,52 @@
   
   
   <entry>
+    <title>CF-ITMO公开课-并查集-STEP1</title>
+    <link href="/2024/02/13/CF-ITMO%E5%85%AC%E5%BC%80%E8%AF%BE-%E5%B9%B6%E6%9F%A5%E9%9B%86-STEP1/"/>
+    <url>/2024/02/13/CF-ITMO%E5%85%AC%E5%BC%80%E8%AF%BE-%E5%B9%B6%E6%9F%A5%E9%9B%86-STEP1/</url>
+    
+    <content type="html"><![CDATA[<p>原文链接：<a href="https://codeforces.com/edu/course/2/lesson/7">Disjoint Sets Union - Codeforces</a></p><h1 id="并查集，第一部分"><a href="#并查集，第一部分" class="headerlink" title="并查集，第一部分"></a>并查集，第一部分</h1><p>并查集(DSU)是一种数据结构，能够在 $n$ 个元素上维护不相交的集合，并且支持下面两种操作：</p><ul><li><code>get(a)</code>- 返回元素<code>a</code>所属集合的标识符。</li><li><code>union(a, b)</code>- 合并包含<code>a</code>和<code>b</code>的两个集合。</li></ul><p>例如，我们可以调用<code>get(a)</code>和<code>get(b)</code>以比较<code>a</code>和<code>b</code>是否属于同一集合。</p><p>定义集合标识符的最简单方法是什么？ — 我们可以选择集合的领导者。</p><p>让我们维护一个数组<code>p</code>，其中<code>p[a]</code>是元素<code>a</code>所属集合的标识符（领导者）。</p><p>下面是两个函数的伪代码：</p><figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs stylus"><span class="hljs-function"><span class="hljs-title">init</span><span class="hljs-params">()</span></span>:  <br><span class="hljs-selector-tag">p</span> = new int<span class="hljs-selector-attr">[n]</span>  <br><span class="hljs-keyword">for</span> <span class="hljs-selector-tag">i</span> <span class="hljs-keyword">in</span> <span class="hljs-number">1</span>.<span class="hljs-selector-class">.n</span>:    <br><span class="hljs-selector-tag">p</span><span class="hljs-selector-attr">[i]</span> = <span class="hljs-selector-tag">i</span><br><span class="hljs-function"><span class="hljs-title">get</span><span class="hljs-params">(a)</span></span>:  <br>return <span class="hljs-selector-tag">p</span><span class="hljs-selector-attr">[a]</span><br><span class="hljs-function"><span class="hljs-title">union</span><span class="hljs-params">(a, b)</span></span>:  <br><span class="hljs-selector-tag">a</span> = <span class="hljs-selector-tag">p</span><span class="hljs-selector-attr">[a]</span>  <br><span class="hljs-selector-tag">b</span> = <span class="hljs-selector-tag">p</span><span class="hljs-selector-attr">[b]</span>  <br><span class="hljs-keyword">for</span> <span class="hljs-selector-tag">i</span> <span class="hljs-keyword">in</span> <span class="hljs-number">1</span>.<span class="hljs-selector-class">.n</span>:    <br><span class="hljs-keyword">if</span> <span class="hljs-selector-tag">p</span><span class="hljs-selector-attr">[i]</span> == <span class="hljs-selector-tag">a</span>:      <br><span class="hljs-selector-tag">p</span><span class="hljs-selector-attr">[i]</span> = b<br></code></pre></td></tr></table></figure><p>函数<code>get(a)</code>只是返回集合的领导者，而函数<code>union(a, b)</code>获取两个集合的领导者，并把所有<code>a</code>集合的元素的领导者设置为<code>b</code>集合的领导者。</p><p>不幸的是，这个算法太慢了：<code>get</code>的复杂度是$O(1)$，但是<code>union</code>的复杂度是$O(n)$。有没有办法改进这个算法呢？</p><p>让我们考虑最简单的想法 — 我们不是遍历所有元素，而是遍历<code>a</code>所在集合的元素。为此，对于每个集合，我们将维护一个链表<code>l[a]</code>。当我们需要合并两个集合时，我们只需将两个链表链接在一起。</p><figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs stylus"><span class="hljs-function"><span class="hljs-title">init</span><span class="hljs-params">()</span></span>:  <br><span class="hljs-selector-tag">p</span> = new int<span class="hljs-selector-attr">[n]</span>  <br>l = new List<span class="hljs-selector-attr">[n]</span>  <br><span class="hljs-keyword">for</span> <span class="hljs-selector-tag">i</span> <span class="hljs-keyword">in</span> <span class="hljs-number">1</span>.<span class="hljs-selector-class">.n</span>:    <br><span class="hljs-selector-tag">p</span><span class="hljs-selector-attr">[i]</span> = <span class="hljs-selector-tag">i</span>    <br>l<span class="hljs-selector-attr">[i]</span> = &#123; <span class="hljs-selector-tag">i</span> &#125;<br><span class="hljs-function"><span class="hljs-title">get</span><span class="hljs-params">(a)</span></span>:  <br>return <span class="hljs-selector-tag">p</span><span class="hljs-selector-attr">[a]</span><br><span class="hljs-function"><span class="hljs-title">union</span><span class="hljs-params">(a, b)</span></span>:  <br><span class="hljs-selector-tag">a</span> = <span class="hljs-selector-tag">p</span><span class="hljs-selector-attr">[a]</span>  <br><span class="hljs-selector-tag">b</span> = <span class="hljs-selector-tag">p</span><span class="hljs-selector-attr">[b]</span>  <br><span class="hljs-keyword">for</span> x <span class="hljs-keyword">in</span> l<span class="hljs-selector-attr">[a]</span>:    <br><span class="hljs-selector-tag">p</span><span class="hljs-selector-attr">[x]</span> = <span class="hljs-selector-tag">b</span>  <br>l<span class="hljs-selector-attr">[b]</span><span class="hljs-selector-class">.append</span>(l<span class="hljs-selector-attr">[a]</span>)<br></code></pre></td></tr></table></figure><p>现在，<code>get(a)</code>的时间复杂度为$O(1)$，而<code>union(a, b)</code>的时间复杂度为$O(|l[a]|)$。不幸的是，这种复杂度还不够好：有可能找到一种执行方式，使得<code>union</code>的平均时间复杂度为$O(n)$。</p><p>考虑以下执行顺序：</p><ul><li>union(1, 2)，其中$|l[1]|&#x3D;1$，$|l[2]|&#x3D;1$，  </li><li>union(2, 3)，其中$|l[2]|&#x3D;2$，$|l[3]|&#x3D;1$，  </li><li>union(3, 4)，其中$|l[3]|&#x3D;3$，$|l[4]|&#x3D;1$，</li></ul><p>依此类推。  </p><p>所有操作的总时间为$1+2+3+…+(n−1)&#x3D;O(n^2)$，因此<code>union</code>仍然是$O(n)$。如何改进呢？注意，主要问题在于我们总是将第一个集合连接到第二个集合。但如果我们将最小的集合连接到最大的集合会怎样呢？那么，<code>union</code>的代码将变成以下形式。</p><figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs stylus"><span class="hljs-function"><span class="hljs-title">union</span><span class="hljs-params">(a, b)</span></span>:  <br><span class="hljs-selector-tag">a</span> = <span class="hljs-selector-tag">p</span><span class="hljs-selector-attr">[a]</span>  <br><span class="hljs-selector-tag">b</span> = <span class="hljs-selector-tag">p</span><span class="hljs-selector-attr">[b]</span>  <br><span class="hljs-keyword">if</span> <span class="hljs-built_in">size</span>(l<span class="hljs-selector-attr">[a]</span>) &gt; <span class="hljs-built_in">size</span>(l<span class="hljs-selector-attr">[b]</span>):    <br><span class="hljs-built_in">swap</span>(<span class="hljs-selector-tag">a</span>, b)  <br><span class="hljs-keyword">for</span> x <span class="hljs-keyword">in</span> l<span class="hljs-selector-attr">[a]</span>:    <br><span class="hljs-selector-tag">p</span><span class="hljs-selector-attr">[x]</span> = <span class="hljs-selector-tag">b</span>  <br>l<span class="hljs-selector-attr">[b]</span><span class="hljs-selector-class">.append</span>(l<span class="hljs-selector-attr">[a]</span>)<br></code></pre></td></tr></table></figure><p>我们比较两个集合，如果集合<code>a</code>的大小大于集合<code>b</code>，我们就交换它们。</p><p>注意，我们可以在$O(1)$的时间内实现<code>size(l[a])</code> — 为此，我们必须将链表的大小单独存储。</p><p>这个算法的运行速度如何？</p><p><code>get(a)</code>仍然在$O(1)$的时间内运行，但我们改进了<code>union(a, b)</code>吗？让我们计算一下我们改变<code>x</code>的领导者的次数，即算法执行<code>p[x] = b</code>的次数。</p><p>第一次改变<code>x</code>的领导者是当我们将它与更大的集合合并时。这意味着联合的大小至少为$2$。第二次改变<code>x</code>的领导者是当我们将集合与大小至少为$2$的更大集合合并时。这意味着联合的大小至少为$4$。</p><p>依此类推。我们只有在与更大的集合合并时才改变<code>x</code>的领导者。</p><p>由于我们将所有集合一起合并，每个元素的改变次数为$O(logn)$，因此总时间复杂度为$O(nlogn)$。由于有$n−1$次联合操作，平均时间复杂度为$O(logn)$。</p>]]></content>
+    
+    
+    <categories>
+      
+      <category>Competitive Programming</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>ITMO</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>AVX指令集 in CP</title>
+    <link href="/2023/11/27/CP/"/>
+    <url>/2023/11/27/CP/</url>
+    
+    <content type="html"><![CDATA[<h1 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h1><p>AVX（Advanced Vector Extensions）是一种为SIMD（Single Instruction, Multiple Data）操作设计的指令集扩展。它提供了更宽的向量寄存器和额外的指令，以实现对多个数据元素的<strong>并行</strong>处理。</p><p>2008年3月Intel宣布Sandy Bridge微架构将引入全新的AVX指令集，同年4月公布AVX指令集规范，随后开始不断进行更新，业界普遍认为支持AVX指令集是Sandy Bridge最重要的进步，没有之一。</p><p>2013年，英特尔正式发布了<strong>AVX-512</strong>指令集，和之前的 AVX&#x2F;AVX2一样（只是为了迷惑大家，用位数512命名下一代），AVX-512是一组新的指令集，都属于向量运算指令，将指令宽度进一步扩展到了512bit，相比AVX2在数据寄存器宽度、数量以及FMA单元的宽度都增加了一倍，所以在每个时钟周期内可以打包32 次双精度和 64 次单精度浮点运算，或者8个 64 位和16个 32 位整数，因此在图像&#x2F;音视频处理、数据分析、科学计算、数据加密和压缩以及人工智能&#x2F;深度学习等密集型计算应用场景中，会带来前所未有的强大性能表现，<strong>理论上浮点性能翻倍，整数计算则增加约33%的性能</strong>。</p><h1 id="Usage-in-C"><a href="#Usage-in-C" class="headerlink" title="Usage in C++"></a>Usage in C++</h1><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;immintrin.h&gt;</span></span><br></code></pre></td></tr></table></figure><p>这个头文件提供了必要的函数与数据类型，这些代码底层使用AVX指令集。使用这个头文件就不必在文件中内联汇编去实现AVX支持。</p><p>数据类型：AVX引入了新的数据类型，比如m256用于单精度浮点数（float）的256位宽向量。还有对应的双精度（m256d）和整数数据的类型。</p><p>实操</p><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-meta">#<span class="hljs-keyword">pragma</span> GCC optimize(<span class="hljs-string">&quot;Ofast,no-stack-protector,unroll-loops,fast-math&quot;</span>)</span><br><span class="hljs-meta">#<span class="hljs-keyword">pragma</span> GCC target(<span class="hljs-string">&quot;sse,sse2,sse3,ssse3,sse4.1,sse4.2,avx,avx2,popcnt,tune=native&quot;</span>)</span><br><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;emmintrin.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;immintrin.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;iostream&gt;</span></span><br><br><span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span><br><span class="hljs-function"></span>&#123;<br>    __m256i a = _mm256_set_epi64x(<span class="hljs-number">1024</span>, <span class="hljs-number">2048</span>, <span class="hljs-number">4096</span>, <span class="hljs-number">8192</span>);<br>    <span class="hljs-keyword">auto</span> b = a;<br>    <span class="hljs-keyword">auto</span> res = _mm256_add_epi64(a, b);<br>    <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-number">4</span>; i++)<br>        std::cout &lt;&lt; res[i] &lt;&lt; <span class="hljs-string">&#x27; &#x27;</span>;<br>    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br>&#125;<br></code></pre></td></tr></table></figure><p>输出：</p><figure class="highlight basic"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs basic"><span class="hljs-symbol">16384 </span><span class="hljs-number">8192</span> <span class="hljs-number">4096</span> <span class="hljs-number">2048</span><br></code></pre></td></tr></table></figure><h1 id="References"><a href="#References" class="headerlink" title="References"></a>References</h1><ul><li><a href="https://zhuanlan.zhihu.com/p/136099964">AVX-512指令集的前世今生 - 知乎 (zhihu.com)</a></li><li><a href="https://www.luogu.com.cn/blog/ouuan/avx-optimize">n方过百万 暴力碾标算——指令集优化的基础使用 - ouuan 的博客 - 洛谷博客 (luogu.com.cn)</a></li><li><a href="https://codeforces.com/blog/entry/122531">AVX — really nice thing to optimize everything - Codeforces</a></li></ul>]]></content>
+    
+    
+    
+    <tags>
+      
+      <tag>CPP</tag>
+      
+      <tag>TODO</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>算法竞赛资料收藏</title>
     <link href="/2023/08/03/%E7%AE%97%E6%B3%95%E7%AB%9E%E8%B5%9B%E8%B5%84%E6%96%99%E6%94%B6%E8%97%8F/"/>
     <url>/2023/08/03/%E7%AE%97%E6%B3%95%E7%AB%9E%E8%B5%9B%E8%B5%84%E6%96%99%E6%94%B6%E8%97%8F/</url>
@@ -13,7 +59,7 @@
     
     <categories>
       
-      <category>Competitive programming</category>
+      <category>Competitive Programming</category>
       
     </categories>
     
@@ -38,7 +84,7 @@
     
     <categories>
       
-      <category>Competitive programming</category>
+      <category>Competitive Programming</category>
       
     </categories>
     

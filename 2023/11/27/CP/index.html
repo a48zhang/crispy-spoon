@@ -16,24 +16,23 @@
   <meta name="author" content="a48zhang">
   <meta name="keywords" content="">
   
-    <meta name="description" content="泛型函数是一种能接受不同类型的参数的通用函数。">
+    <meta name="description" content="概述AVX（Advanced Vector Extensions）是一种为SIMD（Single Instruction, Multiple Data）操作设计的指令集扩展。它提供了更宽的向量寄存器和额外的指令，以实现对多个数据元素的并行处理。 2008年3月Intel宣布Sandy Bridge微架构将引入全新的AVX指令集，同年4月公布AVX指令集规范，随后开始不断进行更新，业界普遍认为支持A">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Golang中的泛型">
-<meta property="og:url" content="https://a48zhang.github.io/2023/04/09/generic/index.html">
+<meta property="og:title" content="AVX指令集 in CP">
+<meta property="og:url" content="https://a48zhang.github.io/2023/11/27/CP/index.html">
 <meta property="og:site_name" content="a48zhang&#39;s blog">
-<meta property="og:description" content="泛型函数是一种能接受不同类型的参数的通用函数。">
+<meta property="og:description" content="概述AVX（Advanced Vector Extensions）是一种为SIMD（Single Instruction, Multiple Data）操作设计的指令集扩展。它提供了更宽的向量寄存器和额外的指令，以实现对多个数据元素的并行处理。 2008年3月Intel宣布Sandy Bridge微架构将引入全新的AVX指令集，同年4月公布AVX指令集规范，随后开始不断进行更新，业界普遍认为支持A">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://a48zhang.github.io/2023/04/09/generic/1.png">
-<meta property="article:published_time" content="2023-04-09T20:33:11.000Z">
+<meta property="article:published_time" content="2023-11-27T10:08:39.000Z">
 <meta property="article:modified_time" content="2024-02-13T16:17:20.611Z">
 <meta property="article:author" content="a48zhang">
-<meta property="article:tag" content="golang">
+<meta property="article:tag" content="CPP">
+<meta property="article:tag" content="TODO">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://a48zhang.github.io/2023/04/09/generic/1.png">
   
   
   
-  <title>Golang中的泛型 - a48zhang&#39;s blog</title>
+  <title>AVX指令集 in CP - a48zhang&#39;s blog</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -199,7 +198,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="Golang中的泛型"></span>
+            <span id="subtitle" data-typed-text="AVX指令集 in CP"></span>
           
         </div>
 
@@ -210,8 +209,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2023-04-09 20:33" pubdate>
-          2023年4月9日 晚上
+        <time datetime="2023-11-27 10:08" pubdate>
+          2023年11月27日 上午
         </time>
       </span>
     
@@ -222,7 +221,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          913 字
+          1.3k 字
         
       </span>
     
@@ -233,7 +232,7 @@
         
         
         
-          8 分钟
+          11 分钟
         
       </span>
     
@@ -270,33 +269,29 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">Golang中的泛型</h1>
+            <h1 id="seo-header">AVX指令集 in CP</h1>
             
             
               <div class="markdown-body">
                 
-                <h1 id="Golang中的泛型"><a href="#Golang中的泛型" class="headerlink" title="Golang中的泛型"></a>Golang中的泛型</h1><p>泛型函数是一种通用函数。它能接受不同类型的参数。</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">Foo</span>[<span class="hljs-title">K</span> <span class="hljs-title">comparable</span>, <span class="hljs-title">V</span> <span class="hljs-title">int64</span> | <span class="hljs-title">float64</span>]<span class="hljs-params">(m <span class="hljs-keyword">map</span>[K]V)</span></span> V &#123;<br>    <span class="hljs-keyword">var</span> s V<br>    <span class="hljs-keyword">for</span> _, v := <span class="hljs-keyword">range</span> m &#123;<br>        s += v<br>    &#125;<br>    <span class="hljs-keyword">return</span> s<br>&#125;<br></code></pre></td></tr></table></figure>
+                <h1 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h1><p>AVX（Advanced Vector Extensions）是一种为SIMD（Single Instruction, Multiple Data）操作设计的指令集扩展。它提供了更宽的向量寄存器和额外的指令，以实现对多个数据元素的<strong>并行</strong>处理。</p>
+<p>2008年3月Intel宣布Sandy Bridge微架构将引入全新的AVX指令集，同年4月公布AVX指令集规范，随后开始不断进行更新，业界普遍认为支持AVX指令集是Sandy Bridge最重要的进步，没有之一。</p>
+<p>2013年，英特尔正式发布了<strong>AVX-512</strong>指令集，和之前的 AVX&#x2F;AVX2一样（只是为了迷惑大家，用位数512命名下一代），AVX-512是一组新的指令集，都属于向量运算指令，将指令宽度进一步扩展到了512bit，相比AVX2在数据寄存器宽度、数量以及FMA单元的宽度都增加了一倍，所以在每个时钟周期内可以打包32 次双精度和 64 次单精度浮点运算，或者8个 64 位和16个 32 位整数，因此在图像&#x2F;音视频处理、数据分析、科学计算、数据加密和压缩以及人工智能&#x2F;深度学习等密集型计算应用场景中，会带来前所未有的强大性能表现，<strong>理论上浮点性能翻倍，整数计算则增加约33%的性能</strong>。</p>
+<h1 id="Usage-in-C"><a href="#Usage-in-C" class="headerlink" title="Usage in C++"></a>Usage in C++</h1><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;immintrin.h&gt;</span></span><br></code></pre></td></tr></table></figure>
+<p>这个头文件提供了必要的函数与数据类型，这些代码底层使用AVX指令集。使用这个头文件就不必在文件中内联汇编去实现AVX支持。</p>
+<p>数据类型：AVX引入了新的数据类型，比如m256用于单精度浮点数（float）的256位宽向量。还有对应的双精度（m256d）和整数数据的类型。</p>
+<p>实操</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-meta">#<span class="hljs-keyword">pragma</span> GCC optimize(<span class="hljs-string">&quot;Ofast,no-stack-protector,unroll-loops,fast-math&quot;</span>)</span><br><span class="hljs-meta">#<span class="hljs-keyword">pragma</span> GCC target(<span class="hljs-string">&quot;sse,sse2,sse3,ssse3,sse4.1,sse4.2,avx,avx2,popcnt,tune=native&quot;</span>)</span><br><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;emmintrin.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;immintrin.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;iostream&gt;</span></span><br><br><span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span><br><span class="hljs-function"></span>&#123;<br>    __m256i a = _mm256_set_epi64x(<span class="hljs-number">1024</span>, <span class="hljs-number">2048</span>, <span class="hljs-number">4096</span>, <span class="hljs-number">8192</span>);<br>    <span class="hljs-keyword">auto</span> b = a;<br>    <span class="hljs-keyword">auto</span> res = _mm256_add_epi64(a, b);<br>    <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-number">4</span>; i++)<br>        std::cout &lt;&lt; res[i] &lt;&lt; <span class="hljs-string">&#x27; &#x27;</span>;<br>    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
 
-<p>对于函数<code>Foo</code>的参数<code>m map[K]V</code>：</p>
-<ul>
-<li>K 接受 comparable 泛型约束。comparable包括所有能进行比较的类型(<code>int8</code> ,<code>uint16</code>, <code>float32</code>, <code>string</code>…)。</li>
-<li>V 接受<code>int64 | float64</code>泛型约束。V可以是两者中的任意一个。</li>
-</ul>
-<h2 id="使用接口"><a href="#使用接口" class="headerlink" title="使用接口"></a>使用接口</h2><h3 id="为什么使用接口"><a href="#为什么使用接口" class="headerlink" title="为什么使用接口"></a>为什么使用接口</h3><ul>
-<li>实现对参数类型约束本身的代码复用。</li>
-</ul>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-keyword">type</span> Number <span class="hljs-keyword">interface</span> &#123;<br>    <span class="hljs-type">int64</span> | <span class="hljs-type">float64</span> <span class="hljs-comment">// 可复用！</span><br>&#125;<br><br><span class="hljs-comment">// 为什么K的约束为comparable?</span><br><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">Foo</span>[<span class="hljs-title">K</span> <span class="hljs-title">comparable</span>, <span class="hljs-title">V</span> <span class="hljs-title">Number</span>]<span class="hljs-params">(m <span class="hljs-keyword">map</span>[K]V)</span></span> V &#123;<br>    <span class="hljs-keyword">var</span> s V<br>    <span class="hljs-keyword">for</span> _, v := <span class="hljs-keyword">range</span> m &#123;<br>        s += v<br>    &#125;<br>    <span class="hljs-keyword">return</span> s<br>&#125;<br></code></pre></td></tr></table></figure>
-<ul>
-<li>使用参数类型提供的方法。<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-comment">// From &quot;github.com/2023-Melting-Backend&quot;</span><br><span class="hljs-keyword">type</span> sth <span class="hljs-keyword">interface</span> &#123;<br>	db.User | db.Template | db.ProposalInfo | db.Tag | db.Question | db.Game<br>	TableName() <span class="hljs-type">string</span><br>	GetKey() (<span class="hljs-type">string</span>, <span class="hljs-type">int</span>)<br>&#125;<br><br><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">UpdateSth</span>[<span class="hljs-title">T</span> <span class="hljs-title">sth</span>]<span class="hljs-params">(value T)</span></span> <span class="hljs-type">error</span> &#123;<br>	pk, id := value.GetKey()<br>	result := db.DB.Table(value.TableName()).Updates(value).Where(pk+<span class="hljs-string">&quot; = ?&quot;</span>, id)<br>	<span class="hljs-keyword">return</span> result.Error<br>&#125;<br></code></pre></td></tr></table></figure></li>
-</ul>
-<p>如果不在接口中规定方法，编译会报错（即使约束中所有类型都实现了相关方法）。</p>
-<img src="/2023/04/09/generic/1.png" srcset="/img/loading.gif" lazyload class="" title="p1">
+<p>输出：</p>
+<figure class="highlight basic"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs basic"><span class="hljs-symbol">16384 </span><span class="hljs-number">8192</span> <span class="hljs-number">4096</span> <span class="hljs-number">2048</span><br></code></pre></td></tr></table></figure>
 
-<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
-<li><p><a target="_blank" rel="noopener" href="https://go.dev/doc/tutorial/generics">Tutorial: Getting started with generics</a></p>
-<p>​</p>
-</li>
+
+
+<h1 id="References"><a href="#References" class="headerlink" title="References"></a>References</h1><ul>
+<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/136099964">AVX-512指令集的前世今生 - 知乎 (zhihu.com)</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.luogu.com.cn/blog/ouuan/avx-optimize">n方过百万 暴力碾标算——指令集优化的基础使用 - ouuan 的博客 - 洛谷博客 (luogu.com.cn)</a></li>
+<li><a target="_blank" rel="noopener" href="https://codeforces.com/blog/entry/122531">AVX — really nice thing to optimize everything - Codeforces</a></li>
 </ul>
 
                 
@@ -306,32 +301,13 @@
             <div>
               <div class="post-metas my-3">
   
-    <div class="post-meta mr-3 d-flex align-items-center">
-      <i class="iconfont icon-category"></i>
-      
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/Programming-Skills/" class="category-chain-item">Programming Skills</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-    </div>
-  
   
     <div class="post-meta">
       <i class="iconfont icon-tags"></i>
       
-        <a href="/tags/golang/" class="print-no-link">#golang</a>
+        <a href="/tags/CPP/" class="print-no-link">#CPP</a>
+      
+        <a href="/tags/TODO/" class="print-no-link">#TODO</a>
       
     </div>
   
@@ -343,8 +319,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>Golang中的泛型</div>
-      <div>https://a48zhang.github.io/2023/04/09/generic/</div>
+      <div>AVX指令集 in CP</div>
+      <div>https://a48zhang.github.io/2023/11/27/CP/</div>
     </div>
     <div class="license-meta">
       
@@ -356,7 +332,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2023年4月9日</div>
+          <div>2023年11月27日</div>
         </div>
       
       
@@ -388,15 +364,21 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2023/04/09/hexo%E6%96%87%E6%A1%A3/" title="hexo文档">
+                      <a href="/2024/02/13/CF-ITMO%E5%85%AC%E5%BC%80%E8%AF%BE-%E5%B9%B6%E6%9F%A5%E9%9B%86-STEP1/" title="CF-ITMO公开课-并查集-STEP1">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">hexo文档</span>
+                        <span class="hidden-mobile">CF-ITMO公开课-并查集-STEP1</span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     
                   </article>
                   <article class="post-next col-6">
                     
+                    
+                      <a href="/2023/08/03/%E7%AE%97%E6%B3%95%E7%AB%9E%E8%B5%9B%E8%B5%84%E6%96%99%E6%94%B6%E8%97%8F/" title="算法竞赛资料收藏">
+                        <span class="hidden-mobile">算法竞赛资料收藏</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
                     
                   </article>
                 </div>
@@ -416,7 +398,7 @@
         var options = Object.assign(
           {"clientID":"b422f55f80ae74e20066","clientSecret":"1e9850b02e138f12aa8a7a1634a56c4a2f0209dd","repo":"a48zhang.github.io","owner":"a48zhang","admin":["a48zhang"],"language":"zh-CN","labels":["Gitalk"],"perPage":10,"pagerDirection":"last","distractionFreeMode":false,"createIssueManually":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token"},
           {
-            id: '96706a03a9ea70d85128996f5c403e96'
+            id: '8a82d09637c56c7bc30909849f26aef1'
           }
         )
         var gitalk = new Gitalk(options);

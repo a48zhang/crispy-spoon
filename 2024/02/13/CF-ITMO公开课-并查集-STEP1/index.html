@@ -16,24 +16,22 @@
   <meta name="author" content="a48zhang">
   <meta name="keywords" content="">
   
-    <meta name="description" content="泛型函数是一种能接受不同类型的参数的通用函数。">
+    <meta name="description" content="ITMO Academy: pilot course » Disjoint Sets Union">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Golang中的泛型">
-<meta property="og:url" content="https://a48zhang.github.io/2023/04/09/generic/index.html">
+<meta property="og:title" content="CF-ITMO公开课-并查集-STEP1">
+<meta property="og:url" content="https://a48zhang.github.io/2024/02/13/CF-ITMO%E5%85%AC%E5%BC%80%E8%AF%BE-%E5%B9%B6%E6%9F%A5%E9%9B%86-STEP1/index.html">
 <meta property="og:site_name" content="a48zhang&#39;s blog">
-<meta property="og:description" content="泛型函数是一种能接受不同类型的参数的通用函数。">
+<meta property="og:description" content="ITMO Academy: pilot course » Disjoint Sets Union">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://a48zhang.github.io/2023/04/09/generic/1.png">
-<meta property="article:published_time" content="2023-04-09T20:33:11.000Z">
-<meta property="article:modified_time" content="2024-02-13T16:17:20.611Z">
+<meta property="article:published_time" content="2024-02-13T16:17:20.607Z">
+<meta property="article:modified_time" content="2024-02-13T16:17:20.607Z">
 <meta property="article:author" content="a48zhang">
-<meta property="article:tag" content="golang">
+<meta property="article:tag" content="ITMO">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://a48zhang.github.io/2023/04/09/generic/1.png">
   
   
   
-  <title>Golang中的泛型 - a48zhang&#39;s blog</title>
+  <title>CF-ITMO公开课-并查集-STEP1 - a48zhang&#39;s blog</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -199,7 +197,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="Golang中的泛型"></span>
+            <span id="subtitle" data-typed-text="CF-ITMO公开课-并查集-STEP1"></span>
           
         </div>
 
@@ -210,8 +208,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2023-04-09 20:33" pubdate>
-          2023年4月9日 晚上
+        <time datetime="2024-02-13 16:17" pubdate>
+          2024年2月13日 下午
         </time>
       </span>
     
@@ -222,7 +220,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          913 字
+          1.6k 字
         
       </span>
     
@@ -233,7 +231,7 @@
         
         
         
-          8 分钟
+          14 分钟
         
       </span>
     
@@ -270,34 +268,45 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">Golang中的泛型</h1>
+            <h1 id="seo-header">CF-ITMO公开课-并查集-STEP1</h1>
             
             
               <div class="markdown-body">
                 
-                <h1 id="Golang中的泛型"><a href="#Golang中的泛型" class="headerlink" title="Golang中的泛型"></a>Golang中的泛型</h1><p>泛型函数是一种通用函数。它能接受不同类型的参数。</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">Foo</span>[<span class="hljs-title">K</span> <span class="hljs-title">comparable</span>, <span class="hljs-title">V</span> <span class="hljs-title">int64</span> | <span class="hljs-title">float64</span>]<span class="hljs-params">(m <span class="hljs-keyword">map</span>[K]V)</span></span> V &#123;<br>    <span class="hljs-keyword">var</span> s V<br>    <span class="hljs-keyword">for</span> _, v := <span class="hljs-keyword">range</span> m &#123;<br>        s += v<br>    &#125;<br>    <span class="hljs-keyword">return</span> s<br>&#125;<br></code></pre></td></tr></table></figure>
-
-<p>对于函数<code>Foo</code>的参数<code>m map[K]V</code>：</p>
+                <p>原文链接：<a target="_blank" rel="noopener" href="https://codeforces.com/edu/course/2/lesson/7">Disjoint Sets Union - Codeforces</a></p>
+<h1 id="并查集，第一部分"><a href="#并查集，第一部分" class="headerlink" title="并查集，第一部分"></a>并查集，第一部分</h1><p>并查集(DSU)是一种数据结构，能够在 $n$ 个元素上维护不相交的集合，并且支持下面两种操作：</p>
 <ul>
-<li>K 接受 comparable 泛型约束。comparable包括所有能进行比较的类型(<code>int8</code> ,<code>uint16</code>, <code>float32</code>, <code>string</code>…)。</li>
-<li>V 接受<code>int64 | float64</code>泛型约束。V可以是两者中的任意一个。</li>
+<li><code>get(a)</code>- 返回元素<code>a</code>所属集合的标识符。</li>
+<li><code>union(a, b)</code>- 合并包含<code>a</code>和<code>b</code>的两个集合。</li>
 </ul>
-<h2 id="使用接口"><a href="#使用接口" class="headerlink" title="使用接口"></a>使用接口</h2><h3 id="为什么使用接口"><a href="#为什么使用接口" class="headerlink" title="为什么使用接口"></a>为什么使用接口</h3><ul>
-<li>实现对参数类型约束本身的代码复用。</li>
-</ul>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-keyword">type</span> Number <span class="hljs-keyword">interface</span> &#123;<br>    <span class="hljs-type">int64</span> | <span class="hljs-type">float64</span> <span class="hljs-comment">// 可复用！</span><br>&#125;<br><br><span class="hljs-comment">// 为什么K的约束为comparable?</span><br><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">Foo</span>[<span class="hljs-title">K</span> <span class="hljs-title">comparable</span>, <span class="hljs-title">V</span> <span class="hljs-title">Number</span>]<span class="hljs-params">(m <span class="hljs-keyword">map</span>[K]V)</span></span> V &#123;<br>    <span class="hljs-keyword">var</span> s V<br>    <span class="hljs-keyword">for</span> _, v := <span class="hljs-keyword">range</span> m &#123;<br>        s += v<br>    &#125;<br>    <span class="hljs-keyword">return</span> s<br>&#125;<br></code></pre></td></tr></table></figure>
-<ul>
-<li>使用参数类型提供的方法。<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-comment">// From &quot;github.com/2023-Melting-Backend&quot;</span><br><span class="hljs-keyword">type</span> sth <span class="hljs-keyword">interface</span> &#123;<br>	db.User | db.Template | db.ProposalInfo | db.Tag | db.Question | db.Game<br>	TableName() <span class="hljs-type">string</span><br>	GetKey() (<span class="hljs-type">string</span>, <span class="hljs-type">int</span>)<br>&#125;<br><br><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">UpdateSth</span>[<span class="hljs-title">T</span> <span class="hljs-title">sth</span>]<span class="hljs-params">(value T)</span></span> <span class="hljs-type">error</span> &#123;<br>	pk, id := value.GetKey()<br>	result := db.DB.Table(value.TableName()).Updates(value).Where(pk+<span class="hljs-string">&quot; = ?&quot;</span>, id)<br>	<span class="hljs-keyword">return</span> result.Error<br>&#125;<br></code></pre></td></tr></table></figure></li>
-</ul>
-<p>如果不在接口中规定方法，编译会报错（即使约束中所有类型都实现了相关方法）。</p>
-<img src="/2023/04/09/generic/1.png" srcset="/img/loading.gif" lazyload class="" title="p1">
+<p>例如，我们可以调用<code>get(a)</code>和<code>get(b)</code>以比较<code>a</code>和<code>b</code>是否属于同一集合。</p>
+<p>定义集合标识符的最简单方法是什么？ — 我们可以选择集合的领导者。</p>
+<p>让我们维护一个数组<code>p</code>，其中<code>p[a]</code>是元素<code>a</code>所属集合的标识符（领导者）。</p>
+<p>下面是两个函数的伪代码：</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs stylus"><span class="hljs-function"><span class="hljs-title">init</span><span class="hljs-params">()</span></span>:  <br>	<span class="hljs-selector-tag">p</span> = new int<span class="hljs-selector-attr">[n]</span>  <br>	<span class="hljs-keyword">for</span> <span class="hljs-selector-tag">i</span> <span class="hljs-keyword">in</span> <span class="hljs-number">1</span>.<span class="hljs-selector-class">.n</span>:    <br>		<span class="hljs-selector-tag">p</span><span class="hljs-selector-attr">[i]</span> = <span class="hljs-selector-tag">i</span><br><span class="hljs-function"><span class="hljs-title">get</span><span class="hljs-params">(a)</span></span>:  <br>	return <span class="hljs-selector-tag">p</span><span class="hljs-selector-attr">[a]</span><br><span class="hljs-function"><span class="hljs-title">union</span><span class="hljs-params">(a, b)</span></span>:  <br>	<span class="hljs-selector-tag">a</span> = <span class="hljs-selector-tag">p</span><span class="hljs-selector-attr">[a]</span>  <br>	<span class="hljs-selector-tag">b</span> = <span class="hljs-selector-tag">p</span><span class="hljs-selector-attr">[b]</span>  <br>	<span class="hljs-keyword">for</span> <span class="hljs-selector-tag">i</span> <span class="hljs-keyword">in</span> <span class="hljs-number">1</span>.<span class="hljs-selector-class">.n</span>:    <br>		<span class="hljs-keyword">if</span> <span class="hljs-selector-tag">p</span><span class="hljs-selector-attr">[i]</span> == <span class="hljs-selector-tag">a</span>:      <br>			<span class="hljs-selector-tag">p</span><span class="hljs-selector-attr">[i]</span> = b<br></code></pre></td></tr></table></figure>
 
-<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
-<li><p><a target="_blank" rel="noopener" href="https://go.dev/doc/tutorial/generics">Tutorial: Getting started with generics</a></p>
-<p>​</p>
-</li>
+<p>函数<code>get(a)</code>只是返回集合的领导者，而函数<code>union(a, b)</code>获取两个集合的领导者，并把所有<code>a</code>集合的元素的领导者设置为<code>b</code>集合的领导者。</p>
+<p>不幸的是，这个算法太慢了：<code>get</code>的复杂度是$O(1)$，但是<code>union</code>的复杂度是$O(n)$。有没有办法改进这个算法呢？</p>
+<p>让我们考虑最简单的想法 — 我们不是遍历所有元素，而是遍历<code>a</code>所在集合的元素。为此，对于每个集合，我们将维护一个链表<code>l[a]</code>。当我们需要合并两个集合时，我们只需将两个链表链接在一起。</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs stylus"><span class="hljs-function"><span class="hljs-title">init</span><span class="hljs-params">()</span></span>:  <br>	<span class="hljs-selector-tag">p</span> = new int<span class="hljs-selector-attr">[n]</span>  <br>	l = new List<span class="hljs-selector-attr">[n]</span>  <br>	<span class="hljs-keyword">for</span> <span class="hljs-selector-tag">i</span> <span class="hljs-keyword">in</span> <span class="hljs-number">1</span>.<span class="hljs-selector-class">.n</span>:    <br>		<span class="hljs-selector-tag">p</span><span class="hljs-selector-attr">[i]</span> = <span class="hljs-selector-tag">i</span>    <br>	l<span class="hljs-selector-attr">[i]</span> = &#123; <span class="hljs-selector-tag">i</span> &#125;<br><span class="hljs-function"><span class="hljs-title">get</span><span class="hljs-params">(a)</span></span>:  <br>	return <span class="hljs-selector-tag">p</span><span class="hljs-selector-attr">[a]</span><br><span class="hljs-function"><span class="hljs-title">union</span><span class="hljs-params">(a, b)</span></span>:  <br>	<span class="hljs-selector-tag">a</span> = <span class="hljs-selector-tag">p</span><span class="hljs-selector-attr">[a]</span>  <br>	<span class="hljs-selector-tag">b</span> = <span class="hljs-selector-tag">p</span><span class="hljs-selector-attr">[b]</span>  <br>	<span class="hljs-keyword">for</span> x <span class="hljs-keyword">in</span> l<span class="hljs-selector-attr">[a]</span>:    <br>		<span class="hljs-selector-tag">p</span><span class="hljs-selector-attr">[x]</span> = <span class="hljs-selector-tag">b</span>  <br>	l<span class="hljs-selector-attr">[b]</span><span class="hljs-selector-class">.append</span>(l<span class="hljs-selector-attr">[a]</span>)<br></code></pre></td></tr></table></figure>
+<p>现在，<code>get(a)</code>的时间复杂度为$O(1)$，而<code>union(a, b)</code>的时间复杂度为$O(|l[a]|)$。不幸的是，这种复杂度还不够好：有可能找到一种执行方式，使得<code>union</code>的平均时间复杂度为$O(n)$。</p>
+<p>考虑以下执行顺序：</p>
+<ul>
+<li>union(1, 2)，其中$|l[1]|&#x3D;1$，$|l[2]|&#x3D;1$，  </li>
+<li>union(2, 3)，其中$|l[2]|&#x3D;2$，$|l[3]|&#x3D;1$，  </li>
+<li>union(3, 4)，其中$|l[3]|&#x3D;3$，$|l[4]|&#x3D;1$，</li>
 </ul>
+<p>依此类推。  </p>
+<p>所有操作的总时间为$1+2+3+…+(n−1)&#x3D;O(n^2)$，因此<code>union</code>仍然是$O(n)$。如何改进呢？注意，主要问题在于我们总是将第一个集合连接到第二个集合。但如果我们将最小的集合连接到最大的集合会怎样呢？那么，<code>union</code>的代码将变成以下形式。</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs stylus"><span class="hljs-function"><span class="hljs-title">union</span><span class="hljs-params">(a, b)</span></span>:  <br>	<span class="hljs-selector-tag">a</span> = <span class="hljs-selector-tag">p</span><span class="hljs-selector-attr">[a]</span>  <br>	<span class="hljs-selector-tag">b</span> = <span class="hljs-selector-tag">p</span><span class="hljs-selector-attr">[b]</span>  <br>	<span class="hljs-keyword">if</span> <span class="hljs-built_in">size</span>(l<span class="hljs-selector-attr">[a]</span>) &gt; <span class="hljs-built_in">size</span>(l<span class="hljs-selector-attr">[b]</span>):    <br>		<span class="hljs-built_in">swap</span>(<span class="hljs-selector-tag">a</span>, b)  <br>	<span class="hljs-keyword">for</span> x <span class="hljs-keyword">in</span> l<span class="hljs-selector-attr">[a]</span>:    <br>		<span class="hljs-selector-tag">p</span><span class="hljs-selector-attr">[x]</span> = <span class="hljs-selector-tag">b</span>  <br>	l<span class="hljs-selector-attr">[b]</span><span class="hljs-selector-class">.append</span>(l<span class="hljs-selector-attr">[a]</span>)<br></code></pre></td></tr></table></figure>
+
+<p>我们比较两个集合，如果集合<code>a</code>的大小大于集合<code>b</code>，我们就交换它们。</p>
+<p>注意，我们可以在$O(1)$的时间内实现<code>size(l[a])</code> — 为此，我们必须将链表的大小单独存储。</p>
+<p>这个算法的运行速度如何？</p>
+<p><code>get(a)</code>仍然在$O(1)$的时间内运行，但我们改进了<code>union(a, b)</code>吗？让我们计算一下我们改变<code>x</code>的领导者的次数，即算法执行<code>p[x] = b</code>的次数。</p>
+<p>第一次改变<code>x</code>的领导者是当我们将它与更大的集合合并时。这意味着联合的大小至少为$2$。第二次改变<code>x</code>的领导者是当我们将集合与大小至少为$2$的更大集合合并时。这意味着联合的大小至少为$4$。</p>
+<p>依此类推。我们只有在与更大的集合合并时才改变<code>x</code>的领导者。</p>
+<p>由于我们将所有集合一起合并，每个元素的改变次数为$O(logn)$，因此总时间复杂度为$O(nlogn)$。由于有$n−1$次联合操作，平均时间复杂度为$O(logn)$。</p>
 
                 
               </div>
@@ -316,7 +325,7 @@
     
       <span class="category-chain">
         
-  <a href="/categories/Programming-Skills/" class="category-chain-item">Programming Skills</a>
+  <a href="/categories/Competitive-Programming/" class="category-chain-item">Competitive Programming</a>
   
   
 
@@ -331,7 +340,7 @@
     <div class="post-meta">
       <i class="iconfont icon-tags"></i>
       
-        <a href="/tags/golang/" class="print-no-link">#golang</a>
+        <a href="/tags/ITMO/" class="print-no-link">#ITMO</a>
       
     </div>
   
@@ -343,8 +352,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>Golang中的泛型</div>
-      <div>https://a48zhang.github.io/2023/04/09/generic/</div>
+      <div>CF-ITMO公开课-并查集-STEP1</div>
+      <div>https://a48zhang.github.io/2024/02/13/CF-ITMO公开课-并查集-STEP1/</div>
     </div>
     <div class="license-meta">
       
@@ -356,7 +365,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2023年4月9日</div>
+          <div>2024年2月13日</div>
         </div>
       
       
@@ -388,15 +397,15 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2023/04/09/hexo%E6%96%87%E6%A1%A3/" title="hexo文档">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">hexo文档</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
+                    
+                      <a href="/2023/11/27/CP/" title="AVX指令集 in CP">
+                        <span class="hidden-mobile">AVX指令集 in CP</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
                     
                   </article>
                 </div>
@@ -416,7 +425,7 @@
         var options = Object.assign(
           {"clientID":"b422f55f80ae74e20066","clientSecret":"1e9850b02e138f12aa8a7a1634a56c4a2f0209dd","repo":"a48zhang.github.io","owner":"a48zhang","admin":["a48zhang"],"language":"zh-CN","labels":["Gitalk"],"perPage":10,"pagerDirection":"last","distractionFreeMode":false,"createIssueManually":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token"},
           {
-            id: '96706a03a9ea70d85128996f5c403e96'
+            id: 'd771c3fbee428c516a10180151b45d54'
           }
         )
         var gitalk = new Gitalk(options);
